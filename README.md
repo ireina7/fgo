@@ -1,12 +1,24 @@
 # fgo
 Functional GOlang
 
+# Features
+- Algebraic Data Types
+  + Option
+  + Result
+  + ...
+- Higher-Kinded Types
+- Typeclasses
+  + Monoid
+  + Functor
+  + ...
+
+
 # Example
 ## Monoid
 ```go
 type Monoid[A any] interface {
-	Empty() A
-	Combine(A, A) A
+    Empty() A
+    Combine(A, A) A
 }
 
 type FolderExample[A any] struct {
