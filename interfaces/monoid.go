@@ -13,7 +13,7 @@ type Monoid[A any] interface {
 type HKTMonoid struct{}
 
 func (m *HKTMonoid) Empty() types.HKT[option.OptionKind, string] {
-	return option.None[string]{}
+	return option.Some[string]{Value: ""}
 }
 
 func (m *HKTMonoid) Combine(
