@@ -1,0 +1,2 @@
+# fgo
+Functional GOlang
