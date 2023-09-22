@@ -27,7 +27,7 @@ type folderExample[A any] struct {
     monoid Monoid[A]
 }
 
-func (example folderExample) foldl(xs []A, acc func([]A, A) []A) []A {
+func (example folderExample[A]) foldl(xs []A, acc func([]A, A) []A) []A {
     m := example.monoid
     ans := m.Empty()
     for _, x := range xs {
