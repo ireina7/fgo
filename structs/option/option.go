@@ -26,10 +26,10 @@ func From[A any](x *A) Option[A] {
 }
 
 func Map[A, B any](fa Option[A], f func(A) B) Option[B] {
+	var y B
 	switch x := fa.(type) {
 	case Some[A]:
-		return Some[B]{Value: f(x.Value)}
-	default:
-		return None[B](struct{}{})
+		y = f(x.Value)
 	}
+	return From(&y)
 }

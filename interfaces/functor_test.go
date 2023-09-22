@@ -11,17 +11,16 @@ import (
 
 func TestFunctor(t *testing.T) {
 	i := 2
-	x := option.From[int](&i)
+	x := option.From(&i)
 	functor := option.MakeFunctor(option.Map[int, int])
 	y := functor.Fmap(x, func(i int) int {
 		return i * i
 	})
-	// t.Logf("%#v", y)
 	ShowOption[int](y)
 }
 
 func TestFunctorSlice(t *testing.T) {
-	xs := slice.From[int]([]int{1, 2, 3, 4, 5})
+	xs := slice.From([]int{1, 2, 3, 4, 5})
 	ys := slice.Map(xs, func(x int) int {
 		return x * x
 	})
