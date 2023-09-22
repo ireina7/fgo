@@ -21,11 +21,11 @@ type Monoid[A any] interface {
     Combine(A, A) A
 }
 
-type FolderExample[A any] struct {
+type folderExample[A any] struct {
     monoid Monoid[A]
 }
 
-func (example FolderExample) foldl(xs []A, acc func([]A, A) []A) []A {
+func (example folderExample) foldl(xs []A, acc func([]A, A) []A) []A {
     m := example.monoid
     ans := m.Empty()
     for _, x := range xs {
@@ -50,7 +50,7 @@ func foldl[F_, A any](
 ## Functor
 ```go
 type Functor[F_, A, B any] interface {
-	Fmap(types.HKT[F_, A], func(A) B) types.HKT[F_, B]
+    Fmap(types.HKT[F_, A], func(A) B) types.HKT[F_, B]
 }
 
 ```
