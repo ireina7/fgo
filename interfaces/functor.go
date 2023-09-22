@@ -9,15 +9,6 @@ type Functor[F_, A, B any] interface {
 	Fmap(types.HKT[F_, A], func(A) B) types.HKT[F_, B]
 }
 
-func fmap[A, B any](fa option.Option[A], f func(A) B) option.Option[B] {
-	switch x := fa.(type) {
-	case option.Some[A]:
-		return option.Some[B]{Value: f(x.Value)}
-	default:
-		return option.None[B](struct{}{})
-	}
-}
-
 type OptionFunctor[A, B any] func(option.Option[A], func(A) B) option.Option[B]
 
 func Make[A, B any](

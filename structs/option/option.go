@@ -17,3 +17,19 @@ type Some[A any] struct {
 
 func (Some[A]) Kind(OptionKind) {}
 func (Some[A]) Elem(A)          {}
+
+func From[A any](x *A) Option[A] {
+	if x == nil {
+		return None[A]{}
+	}
+	return Some[A]{Value: *x}
+}
+
+func Map[A, B any](fa Option[A], f func(A) B) Option[B] {
+	switch x := fa.(type) {
+	case Some[A]:
+		return Some[B]{Value: f(x.Value)}
+	default:
+		return None[B](struct{}{})
+	}
+}
