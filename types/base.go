@@ -1,11 +1,16 @@
 package types
 
-type Unit struct{}
+type Unit int
+
+const UnitValue Unit = 0
 
 func MakeUnit() Unit {
-	return struct{}{}
+	return UnitValue
 }
 
-type Void struct{}
+type absurd struct {
+	v int
+}
+type Void absurd
 
 type Nil any

@@ -6,7 +6,7 @@ type OptionKind any
 
 type Option[A any] types.HKT[OptionKind, A]
 
-type None[A any] struct{}
+type None[A any] types.Unit
 
 func (None[A]) Kind(OptionKind) {}
 func (None[A]) ElemType(A)      {}
@@ -20,9 +20,17 @@ func (Some[A]) ElemType(A)      {}
 
 func From[A any](x *A) Option[A] {
 	if x == nil {
-		return None[A]{}
+		return None[A](types.MakeUnit())
 	}
 	return Some[A]{Value: *x}
+}
+
+func IsNone[A any](x Option[A]) bool {
+	switch x.(type) {
+	case None[A]:
+		return true
+	}
+	return false
 }
 
 func Map[A, B any](fa Option[A], f func(A) B) Option[B] {
@@ -30,6 +38,15 @@ func Map[A, B any](fa Option[A], f func(A) B) Option[B] {
 	switch x := fa.(type) {
 	case Some[A]:
 		y = f(x.Value)
+	default:
 	}
 	return From(&y)
+}
+
+func Map_[A any](fa Option[A], f func(A)) {
+	switch x := fa.(type) {
+	case Some[A]:
+		f(x.Value)
+	default:
+	}
 }

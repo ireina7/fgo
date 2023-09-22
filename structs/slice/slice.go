@@ -35,15 +35,15 @@ func Map[A, B any](list Slice[A], f func(A) B) Slice[B] {
 func Last[A any](list Slice[A]) option.Option[A] {
 	xs := list.(slice[A])
 	if len(xs) == 0 {
-		return option.None[A]{}
+		return option.From[A](nil)
 	}
-	return option.Some[A]{Value: xs[len(xs)-1]}
+	return option.From[A](&xs[len(xs)-1])
 }
 
 func Init[A any](list Slice[A]) option.Option[Slice[A]] {
 	xs := list.(slice[A])
 	if len(xs) == 0 {
-		return option.None[Slice[A]]{}
+		return option.From[Slice[A]](nil)
 	}
 	return option.Some[Slice[A]]{Value: xs[0 : len(xs)-1]}
 }
@@ -51,7 +51,7 @@ func Init[A any](list Slice[A]) option.Option[Slice[A]] {
 func Head[A any](list Slice[A]) option.Option[A] {
 	xs := list.(slice[A])
 	if len(xs) == 0 {
-		return option.None[A]{}
+		return option.From[A](nil)
 	}
 	return option.Some[A]{Value: xs[0]}
 }
@@ -59,7 +59,7 @@ func Head[A any](list Slice[A]) option.Option[A] {
 func Tail[A any](list Slice[A]) option.Option[Slice[A]] {
 	xs := list.(slice[A])
 	if len(xs) == 0 {
-		return option.None[Slice[A]]{}
+		return option.From[Slice[A]](nil)
 	}
 	return option.Some[Slice[A]]{Value: xs[1:]}
 }
