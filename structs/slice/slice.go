@@ -67,7 +67,7 @@ func Tail[A any](list Slice[A]) option.Option[Slice[A]] {
 func Concat[A any](list0, list1 Slice[A]) Slice[A] {
 	xs := list0.(slice[A])
 	ys := list1.(slice[A])
-	var zs []A
+	zs := make([]A, 0)
 	zs = append(zs, xs...)
 	zs = append(zs, ys...)
 	return slice[A](zs)

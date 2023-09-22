@@ -12,7 +12,7 @@ import (
 func TestFunctor(t *testing.T) {
 	i := 2
 	x := option.From[int](&i)
-	functor := Make(option.Map[int, int])
+	functor := option.MakeFunctor(option.Map[int, int])
 	y := functor.Fmap(x, func(i int) int {
 		return i * i
 	})
