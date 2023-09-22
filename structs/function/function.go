@@ -9,7 +9,7 @@ type Reader[A any] types.HKT[ReaderKind, A]
 type Func[A, B any] func(A) B
 
 func (f Func[A, B]) Kind(ReaderKind) {}
-func (f Func[A, B]) Elem(B)          {}
+func (f Func[A, B]) ElemType(B)      {}
 
 func From[A, B any](f func(A) B) Func[A, B] {
 	return Func[A, B](f)

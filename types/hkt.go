@@ -1,6 +1,14 @@
 package types
 
-type HKT[F_, A any] interface {
+type Kind[F_ any] interface {
 	Kind(F_)
-	Elem(A)
+}
+
+type ElemType[T any] interface {
+	ElemType(T)
+}
+
+type HKT[F_, A any] interface {
+	Kind[F_]
+	ElemType[A]
 }

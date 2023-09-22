@@ -12,7 +12,7 @@ type Slice[A any] types.HKT[SliceKind, A]
 type slice[A any] []A
 
 func (s slice[A]) Kind(SliceKind) {}
-func (s slice[A]) Elem(A)         {}
+func (s slice[A]) ElemType(A)     {}
 
 func MakeSlice[A any](xs []A, x ...A) Slice[A] {
 	xs = append(xs, x...)

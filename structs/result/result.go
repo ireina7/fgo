@@ -11,14 +11,14 @@ type Ok[A any] struct {
 }
 
 func (Ok[A]) Kind(ResultKind) {}
-func (Ok[A]) Elem(A)          {}
+func (Ok[A]) ElemType(A)      {}
 
 type Err[A any] struct {
 	Error error
 }
 
 func (Err[A]) Kind(ResultKind) {}
-func (Err[A]) Elem(A)          {}
+func (Err[A]) ElemType(A)      {}
 
 func From[A any](x A) Result[A] {
 	return Ok[A]{Value: x}

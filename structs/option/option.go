@@ -9,14 +9,14 @@ type Option[A any] types.HKT[OptionKind, A]
 type None[A any] struct{}
 
 func (None[A]) Kind(OptionKind) {}
-func (None[A]) Elem(A)          {}
+func (None[A]) ElemType(A)      {}
 
 type Some[A any] struct {
 	Value A
 }
 
 func (Some[A]) Kind(OptionKind) {}
-func (Some[A]) Elem(A)          {}
+func (Some[A]) ElemType(A)      {}
 
 func From[A any](x *A) Option[A] {
 	if x == nil {
