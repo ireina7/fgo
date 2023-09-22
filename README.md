@@ -1,5 +1,7 @@
 # fgo
-Functional GOlang
+Functional GO!
+
+![cover](./cover.jpeg)
 
 # Features
 - Algebraic Data Types
