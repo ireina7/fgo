@@ -73,9 +73,27 @@ func Concat[A any](list0, list1 Slice[A]) Slice[A] {
 	return slice[A](zs)
 }
 
-func ForEach[A any](xs Slice[A], f func(A)) {
-	Map(xs, func(x A) types.Unit {
-		f(x)
-		return types.MakeUnit()
-	})
+func ForEach[A any](xs Slice[A], f func(int, A)) {
+	ys := xs.(slice[A])
+	for i, y := range ys {
+		f(i, y)
+	}
+}
+
+func Set[A any](xs Slice[A], index int, x A) Slice[A] {
+	ys := xs.(slice[A])
+	ys[index] = x
+	return ys
+}
+
+func Get[A any](xs Slice[A], index int) option.Option[A] {
+	ys := xs.(slice[A])
+	if len(ys) > index {
+		return option.From(&ys[index])
+	}
+	return option.From[A](nil)
+}
+
+func Len[A any](xs Slice[A]) int {
+	return len(xs.(slice[A]))
 }
