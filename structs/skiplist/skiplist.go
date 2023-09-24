@@ -30,6 +30,7 @@ type Node[A any] struct {
 // * Skiplist : The Skiplist structure, must be initialised before use.
 type Skiplist[A any] struct {
 	ord interfaces.Order[A]
+	log interfaces.Logging
 
 	nLevels    int
 	head       *Node[A]

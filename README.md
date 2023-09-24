@@ -7,11 +7,27 @@ Functional GO!
 - Algebraic Data Types
   + Option
   + Result
+  + Slice
+  + HashMap
+  + List
+  + SkipList
+  + Ref
+  + Ptr
+  + Lazy
+  + Tuple
   + ...
 - Higher-Kinded Types
 - Typeclasses
   + Monoid
   + Functor
+  + Eq
+  + Ord
+  + Iterable
+  + Implement
+  + Monad
+  + Foldable
+  + Enum
+  + Apply
   + ...
 
 
@@ -34,19 +50,6 @@ func (example foldExample[A]) foldl(xs []A, acc func([]A, A) []A) []A {
         ans = m.Combine(ans, x)
     }
     return ans
-}
-```
-- Monoid whith HKT(Just for fun ;)
-```go
-func foldl[F_, A any](
-    monoid Monoid[HKT[F_, A]],
-    xs ...HKT[F_, A],
-) HKT[F_, A] {
-    zs := monoid.Empty()
-    for _, ys := range xs {
-	    zs = monoid.Combine(zs, ys)
-    }
-    return zs
 }
 ```
 ## Functor
