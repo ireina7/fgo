@@ -3,12 +3,30 @@ package slice
 import (
 	"fmt"
 	"testing"
+
+	"github.com/ireina7/fgo/interfaces"
+	"github.com/ireina7/fgo/types"
+	"github.com/ireina7/fgo/util"
 )
 
+func TestHKT(t *testing.T) {
+	var xs types.HKT[SliceKind, int]
+	var ys Slice[int]
+	xs = ys
+	util.Use(xs)
+}
+
 func TestSlice(t *testing.T) {
-	xs := []int{1, 2, 3, 4}
-	ForEach(From(xs), func(i int, x int) {
+	xs := Make(1, 2, 3, 4, 5)
+	ForEach(xs, func(i int, x int) {
 		fmt.Println(x)
 	})
-	fmt.Println(Concat(From([]int{0, 9, 8}), From(xs)))
+	fmt.Println(Concat(Make(0, 9, 8), xs))
+}
+
+func TestSliceIter(t *testing.T) {
+	xs := Make(1, 2, 3, 4, 5)
+	for x := range interfaces.Range[Slice[int], int](xs) {
+		fmt.Println("Got", x)
+	}
 }

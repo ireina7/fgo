@@ -26,6 +26,7 @@ func Range[M Iterable[A], A any](xs M) <-chan A {
 	ch := make(chan A)
 	iter := xs.Iter()
 	go func() {
+		defer close(ch)
 		for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
 			option.Map_(x, func(x A) {
 				ch <- x
