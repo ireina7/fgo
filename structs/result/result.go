@@ -2,7 +2,7 @@ package result
 
 import "github.com/ireina7/fgo/types"
 
-type ResultKind any
+type ResultKind types.Kind
 
 type Result[A any] types.HKT[ResultKind, A]
 

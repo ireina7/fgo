@@ -4,9 +4,10 @@ import (
 	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/search/ordered"
+	"github.com/ireina7/fgo/types"
 )
 
-type SliceKind any
+type SliceKind types.Kind
 
 // type SliceType[A any] types.HKT[SliceKind, A]
 

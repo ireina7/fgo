@@ -2,7 +2,7 @@ package option
 
 import "github.com/ireina7/fgo/types"
 
-type OptionKind any
+type OptionKind types.Kind
 
 type Option[A any] types.HKT[OptionKind, A]
 

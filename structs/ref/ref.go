@@ -1,6 +1,8 @@
 package ref
 
-type RefKind any
+import "github.com/ireina7/fgo/types"
+
+type RefKind types.Kind
 
 // * Reference type
 // Ensure not nil

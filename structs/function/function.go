@@ -2,7 +2,7 @@ package function
 
 import "github.com/ireina7/fgo/types"
 
-type ReaderKind any
+type ReaderKind types.Kind
 
 type Reader[A any] types.HKT[ReaderKind, A]
 
