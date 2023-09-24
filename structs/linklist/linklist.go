@@ -4,6 +4,7 @@ import (
 	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/types"
+	"github.com/ireina7/fgo/util"
 )
 
 type ListKind types.Type
@@ -12,15 +13,18 @@ type List[A any] struct {
 	head ListNode[A]
 }
 
+func (List[A]) Kind(ListKind) {}
+func (List[A]) ElemType(A)    {}
+
 func Make[A any](xs ...A) List[A] {
 	head := ListNode[A]{}
-	node := head
+	node := &head
 	for _, x := range xs {
-		node.Value = x
 		node.NextNode = &ListNode[A]{}
-		node = *node.NextNode //TODO need to fix
+		node.NextNode.Value = x
+		node = node.NextNode
 	}
-	return List[A]{head: head}
+	return List[A]{head: *head.NextNode}
 }
 
 func (list List[A]) Iter() interfaces.Iterator[A] {
@@ -35,6 +39,14 @@ func (list List[A]) Len() int {
 		count += 1
 	})
 	return count
+}
+
+func Clone[A any](xs List[A]) List[A] {
+	return util.TODO[List[A]]("List.Clone")
+}
+
+func (list List[A]) Append(x A) List[A] {
+	return util.TODO[List[A]]("List.Append")
 }
 
 // func Map[A, B any](list List[A], f func(A) B) List[B] {
@@ -54,9 +66,6 @@ func (iter *listIter[A]) Next() option.Option[A] {
 	iter.node = iter.node.NextNode
 	return option.From(&val)
 }
-
-func (List[A]) Kind(ListKind) {}
-func (List[A]) ElemType(A)    {}
 
 type ListNode[A any] struct {
 	Value    A

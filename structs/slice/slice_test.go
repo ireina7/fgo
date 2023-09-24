@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/types"
 	"github.com/ireina7/fgo/util"
 )
@@ -26,7 +25,7 @@ func TestSlice(t *testing.T) {
 
 func TestSliceIter(t *testing.T) {
 	xs := Make(1, 2, 3, 4, 5)
-	for x := range interfaces.Range[int](xs) {
+	for _, x := range xs {
 		fmt.Println("Got", x)
 	}
 }
