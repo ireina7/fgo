@@ -33,6 +33,10 @@ func IsNone[A any](x Option[A]) bool {
 	return false
 }
 
+func Get[A any](x Option[A]) A {
+	return x.(Some[A]).Value
+}
+
 func Map[A, B any](fa Option[A], f func(A) B) Option[B] {
 	var y B
 	switch x := fa.(type) {

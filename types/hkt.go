@@ -12,6 +12,9 @@ type ElemType[T any] interface {
 	ElemType(T)
 }
 
+type Type interface {
+}
+
 type HKT[F_ Kind, A any] interface {
 	KindType[F_]
 	ElemType[A]
