@@ -12,7 +12,7 @@ type Iterable[A any] interface {
 	Iter() Iterator[A]
 }
 
-func For[M Iterable[A], A any](xs M, f func(A)) {
+func For[A any](xs Iterable[A], f func(A)) {
 	iter := xs.Iter()
 	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
 		option.Map_(x, func(x A) {
@@ -21,8 +21,12 @@ func For[M Iterable[A], A any](xs M, f func(A)) {
 	}
 }
 
+// func Map[A, B any](xs Iterable[A], f func(A) B) Iterable[B] {
+
+// }
+
 // for x := range Range(customContainer) {}
-func Range[M Iterable[A], A any](xs M) <-chan A {
+func Range[A any](xs Iterable[A]) <-chan A {
 	ch := make(chan A)
 	iter := xs.Iter()
 	go func() {

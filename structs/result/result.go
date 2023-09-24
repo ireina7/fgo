@@ -49,3 +49,16 @@ func MapErr[A any](res Result[A], f func(error) error) Result[A] {
 	}
 	return ans
 }
+
+func Unpack[A any](res Result[A]) (A, error) {
+	var a A
+	var err error
+	switch x := res.(type) {
+	case Ok[A]:
+		a = x.Value
+	case Err[A]:
+		err = x.Error
+	default:
+	}
+	return a, err
+}

@@ -26,7 +26,7 @@ func TestSlice(t *testing.T) {
 
 func TestSliceIter(t *testing.T) {
 	xs := Make(1, 2, 3, 4, 5)
-	for x := range interfaces.Range[Slice[int], int](xs) {
+	for x := range interfaces.Range[int](xs) {
 		fmt.Println("Got", x)
 	}
 }
