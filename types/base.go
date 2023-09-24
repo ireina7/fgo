@@ -1,8 +1,8 @@
 package types
 
-type Unit int
+type Unit struct{}
 
-const UnitValue Unit = 0
+var UnitValue Unit = Unit(struct{}{})
 
 func MakeUnit() Unit {
 	return UnitValue

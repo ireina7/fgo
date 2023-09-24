@@ -22,7 +22,7 @@ func TestLinear(t *testing.T) {
 		Implement: &sliceImpl[int]{},
 	}
 	ans := find.SearchBy(xs, func(x int) bool {
-		return x%2 == 0
+		return x == -1
 	})
 	t.Logf("%#v", option.Map(ans, func(ref ref.Ref[int]) int {
 		return ref.Deref()
