@@ -18,7 +18,7 @@ func TestHKT(t *testing.T) {
 
 func TestSlice(t *testing.T) {
 	xs := Make(1, 2, 3, 4, 5)
-	ForEach(xs, func(i int, x int) {
+	xs.ForEach(func(i int, x int) {
 		fmt.Println(x)
 	})
 	fmt.Println(Concat(Make(0, 9, 8), xs))

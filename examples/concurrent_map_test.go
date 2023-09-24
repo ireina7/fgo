@@ -11,14 +11,14 @@ import (
 type concurrentSlice[A, B any] struct{}
 
 func (s *concurrentSlice[A, B]) fmap(xs slice.Slice[A], f func(A) B) slice.Slice[B] {
-	ys := slice.From(make([]B, slice.Len(xs)))
+	ys := slice.From(make([]B, xs.Len()))
 	var wg sync.WaitGroup
-	slice.ForEach(xs, func(i int, x A) {
+	xs.ForEach(func(i int, x A) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			y := f(x)
-			ys = slice.Set(ys, i, y)
+			ys = ys.Set(i, y)
 		}()
 	})
 	wg.Wait()

@@ -23,6 +23,11 @@ func From[A any](xs []A) Slice[A] {
 	return Slice[A](xs)
 }
 
+func Cons[A any](x A, xs Slice[A]) Slice[A] {
+	ys := Make(x)
+	return ys.Append(xs...)
+}
+
 func Map[A, B any](xs Slice[A], f func(A) B) Slice[B] {
 	ys := make([]B, len(xs))
 	for i, x := range xs {
@@ -31,33 +36,63 @@ func Map[A, B any](xs Slice[A], f func(A) B) Slice[B] {
 	return Slice[B](ys)
 }
 
-func Last[A any](xs Slice[A]) option.Option[A] {
+func (xs Slice[A]) Filter(f func(A) bool) Slice[A] {
+	ys := Make[A]()
+	xs.ForEach(func(_ int, x A) {
+		if f(x) {
+			ys = ys.Append(x)
+		}
+	})
+	return ys
+}
+
+func FlatMap[A, B any](xs Slice[A], f func(A) Slice[B]) Slice[B] {
+	ys := Make[B]()
+	xs.ForEach(func(_ int, x A) {
+		bs := f(x)
+		ys = ys.Append(bs...)
+	})
+	return ys
+}
+
+func Flatten[A any](xxs Slice[Slice[A]]) Slice[A] {
+	ys := Make[A]()
+	xxs.ForEach(func(_ int, xs Slice[A]) {
+		ys = ys.Append(xs...)
+	})
+	return ys
+}
+
+func (xs Slice[A]) Last() option.Option[A] {
 	if len(xs) == 0 {
 		return option.From[A](nil)
 	}
 	return option.From[A](&xs[len(xs)-1])
 }
 
-func Init[A any](xs Slice[A]) option.Option[Slice[A]] {
+func (xs Slice[A]) Init() option.Option[Slice[A]] {
 	if len(xs) == 0 {
 		return option.From[Slice[A]](nil)
 	}
 	return option.Some[Slice[A]]{Value: xs[0 : len(xs)-1]}
 }
 
-func Head[A any](xs Slice[A]) option.Option[A] {
+func (xs Slice[A]) Head() option.Option[A] {
 	if len(xs) == 0 {
 		return option.From[A](nil)
 	}
 	return option.Some[A]{Value: xs[0]}
 }
 
-func Tail[A any](xs Slice[A]) option.Option[Slice[A]] {
-	// xs := list.(slice[A])
+func (xs Slice[A]) Tail() option.Option[Slice[A]] {
 	if len(xs) == 0 {
 		return option.From[Slice[A]](nil)
 	}
 	return option.Some[Slice[A]]{Value: xs[1:]}
+}
+
+func (xs Slice[A]) Slice(start, end int) Slice[A] {
+	return From(xs[start:end])
 }
 
 func Concat[A any](xs, ys Slice[A]) Slice[A] {
@@ -67,25 +102,25 @@ func Concat[A any](xs, ys Slice[A]) Slice[A] {
 	return Slice[A](zs)
 }
 
-func ForEach[A any](ys Slice[A], f func(int, A)) {
+func (ys Slice[A]) ForEach(f func(int, A)) {
 	for i, y := range ys {
 		f(i, y)
 	}
 }
 
-func Set[A any](ys Slice[A], index int, x A) Slice[A] {
+func (ys Slice[A]) Set(index int, x A) Slice[A] {
 	ys[index] = x
 	return ys
 }
 
-func Get[A any](ys Slice[A], index int) option.Option[A] {
+func (ys Slice[A]) Get(index int) option.Option[A] {
 	if len(ys) > index {
 		return option.From(&ys[index])
 	}
 	return option.From[A](nil)
 }
 
-func Insert[A any](ys Slice[A], index int, x A) option.Option[Slice[A]] {
+func (ys Slice[A]) Insert(index int, x A) option.Option[Slice[A]] {
 	if len(ys) < index {
 		return option.From[Slice[A]](nil)
 	}
@@ -96,16 +131,19 @@ func Insert[A any](ys Slice[A], index int, x A) option.Option[Slice[A]] {
 	return option.From[Slice[A]](&ans)
 }
 
-func Len[A any](xs Slice[A]) int {
+func (xs Slice[A]) Append(x ...A) Slice[A] {
+	ys := append(xs, x...)
+	return From(ys)
+}
+
+func (xs Slice[A]) Len() int {
 	return len(xs)
 }
 
 func ZipBy[A, B, C any](xs Slice[A], ys Slice[B], zip func(A, B) C) Slice[C] {
-	len_xs := Len(xs)
-	len_ys := Len(ys)
-	zs := make([]C, ordered.PreludeMinMax[int]().Min(len_xs, len_ys))
-	ForEach(xs, func(i int, x A) {
-		option.Map_(Get(ys, i), func(y B) {
+	zs := make([]C, ordered.PreludeMinMax[int]().Min(xs.Len(), ys.Len()))
+	xs.ForEach(func(i int, x A) {
+		option.Map_(ys.Get(i), func(y B) {
 			zs[i] = zip(x, y)
 		})
 	})
