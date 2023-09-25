@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/types"
 	"github.com/ireina7/fgo/util"
 )
@@ -28,4 +29,11 @@ func TestSliceIter(t *testing.T) {
 	for _, x := range xs {
 		fmt.Println("Got", x)
 	}
+}
+
+func TestForEach(t *testing.T) {
+	xs := Make(1, 2, 3, 4, 5, 6)
+	interfaces.ForEach[int](xs, func(i int, x int) {
+		fmt.Println(i, x)
+	})
 }

@@ -1,5 +1,7 @@
 package number
 
+import "github.com/ireina7/fgo/structs/option"
+
 type EnumInt struct{}
 
 func (enum *EnumInt) Succ(x int) int {
@@ -57,4 +59,20 @@ func (enum *EnumNat) Range(i, j Nat) []Nat {
 		ans = append(ans, k)
 	}
 	return ans
+}
+
+type IntIter struct {
+	curr int
+}
+
+func (IntIter) From(start int) *IntIter {
+	return &IntIter{
+		curr: start,
+	}
+}
+
+func (iter *IntIter) Next() option.Option[int] {
+	num := iter.curr
+	iter.curr += 1
+	return option.From(&num)
 }

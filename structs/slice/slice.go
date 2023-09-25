@@ -11,6 +11,7 @@ type SliceKind types.Kind
 
 // type SliceType[A any] types.HKT[SliceKind, A]
 
+// Slice
 type Slice[A any] []A
 
 func (s Slice[A]) Kind(SliceKind) {}
