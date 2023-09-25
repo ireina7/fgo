@@ -57,3 +57,15 @@ func Map_[A any](fa Option[A], f func(A)) {
 	default:
 	}
 }
+
+func For[A any](fa Option[A], f func(A)) {
+	Map_(fa, f)
+}
+
+func FlatMap[A, B any](ma Option[A], f func(A) Option[B]) Option[B] {
+	if IsNone(ma) {
+		return None[B]{}
+	}
+	a := Get(ma)
+	return f(a)
+}

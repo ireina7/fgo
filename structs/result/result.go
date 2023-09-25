@@ -28,6 +28,23 @@ func FromErr[A any](err error) Result[A] {
 	return Err[A]{Error: err}
 }
 
+func IsOK[A any](res Result[A]) bool {
+	_, ok := res.(Ok[A])
+	return ok
+}
+
+func IsErr[A any](res Result[A]) bool {
+	return !IsOK(res)
+}
+
+func Get[A any](res Ok[A]) A {
+	return res.Value
+}
+
+func GetErr[A any](res Err[A]) error {
+	return res.Error
+}
+
 func Map[A, B any](res Result[A], f func(A) B) Result[B] {
 	var ans Result[B]
 	switch x := res.(type) {
@@ -48,6 +65,17 @@ func MapErr[A any](res Result[A], f func(error) error) Result[A] {
 		ans = Err[A]{Error: f(x.Error)}
 	}
 	return ans
+}
+
+func FlatMap[A, B any](res Result[A], f func(A) Result[B]) Result[B] {
+	if IsErr(res) {
+		return FromErr[B](res.(Err[A]).Error)
+	}
+	return f(Get(res.(Ok[A])))
+}
+
+func AndThen[A, B any](res Result[A], f func(A) Result[B]) Result[B] {
+	return FlatMap(res, f)
 }
 
 func Unpack[A any](res Result[A]) (A, error) {
