@@ -56,11 +56,11 @@ type zipByIter[A, B, C any] struct {
 func (iter *zipByIter[A, B, C]) Next() option.Option[C] {
 	x := iter.xs.Next()
 	y := iter.ys.Next()
-	if option.IsNone(x) || option.IsNone(y) {
-		return option.From[C](nil)
-	}
-	z := iter.f(option.Get(x), option.Get(y))
-	return option.From(&z)
+	return option.FlatMap(x, func(x A) option.Option[C] {
+		return option.FlatMap(y, func(y B) option.Option[C] {
+			return option.Some[C]{Value: iter.f(x, y)}
+		})
+	})
 }
 
 func ZipBy[A, B, C any](xs Iterator[A], ys Iterator[B], f func(A, B) C) Iterator[C] {
