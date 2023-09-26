@@ -25,6 +25,18 @@ func From[A any](xs []A) Slice[A] {
 	return Slice[A](xs)
 }
 
+func Room[A any](length int) Slice[A] {
+	return make([]A, length)
+}
+
+func Empty[A any]() Slice[A] {
+	return Room[A](0)
+}
+
+func Container[A any](capacity int) Slice[A] {
+	return make([]A, 0, capacity)
+}
+
 func Cons[A any](x A, xs Slice[A]) Slice[A] {
 	ys := Make(x)
 	return ys.Append(xs...)
@@ -169,4 +181,20 @@ func (s Slice[A]) Iter() interfaces.Iterator[A] {
 	return &sliceIter[A]{
 		s: s[:],
 	}
+}
+
+type Distinct[A comparable] struct{}
+
+func (self *Distinct[A]) Distinct(xs Slice[A]) Slice[A] {
+	ys := Empty[A]()
+	memo := map[A]struct{}{}
+	for _, x := range xs {
+		_, exist := memo[x]
+		if exist {
+			continue
+		}
+		memo[x] = struct{}{}
+		ys = append(ys, x)
+	}
+	return ys
 }

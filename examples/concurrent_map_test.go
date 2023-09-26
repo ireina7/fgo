@@ -10,8 +10,8 @@ import (
 
 type concurrentSlice[A, B any] struct{}
 
-func (s *concurrentSlice[A, B]) fmap(xs slice.Slice[A], f func(A) B) slice.Slice[B] {
-	ys := slice.From(make([]B, xs.Len()))
+func (s *concurrentSlice[A, B]) Fmap(xs slice.Slice[A], f func(A) B) slice.Slice[B] {
+	ys := slice.Room[B](xs.Len())
 	var wg sync.WaitGroup
 	xs.ForEach(func(i int, x A) {
 		wg.Add(1)
@@ -27,8 +27,8 @@ func (s *concurrentSlice[A, B]) fmap(xs slice.Slice[A], f func(A) B) slice.Slice
 
 func TestMe(t *testing.T) {
 	functor := &concurrentSlice[int, int]{}
-	xs := slice.From([]int{1, 2, 3, 4, 5, 6, 7})
-	ys := functor.fmap(xs, func(x int) int {
+	xs := slice.Make(1, 2, 3, 4, 5, 6, 7)
+	ys := functor.Fmap(xs, func(x int) int {
 		fmt.Println("Processing", x)
 		return x * x
 	})
