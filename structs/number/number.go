@@ -1,6 +1,10 @@
 package number
 
-import "github.com/ireina7/fgo/structs/option"
+import (
+	"github.com/ireina7/fgo/interfaces"
+	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/slice"
+)
 
 type EnumInt struct{}
 
@@ -16,15 +20,19 @@ func (enum *EnumInt) ToEnum(i int) int {
 	return i
 }
 
-func (enum *EnumInt) Range(i, j int) []int {
+func (enum *EnumInt) Range(i, j int) interfaces.Iterator[int] {
 	if j <= i {
-		return []int{}
+		return interfaces.EmptyIter[int]()
 	}
 	ans := make([]int, 0, j-i)
 	for k := i; k < j; k++ {
 		ans = append(ans, k)
 	}
-	return ans
+	return slice.From(ans).Iter()
+}
+
+func NewEnumInt() *EnumInt {
+	return &EnumInt{}
 }
 
 type Nat uint
@@ -49,16 +57,16 @@ func (enum *EnumNat) ToEnum(i int) Nat {
 	return Nat(uint(i))
 }
 
-func (enum *EnumNat) Range(i, j Nat) []Nat {
+func (enum *EnumNat) Range(i, j Nat) interfaces.Iterator[Nat] {
 	if j <= i {
-		return []Nat{}
+		return interfaces.EmptyIter[Nat]()
 	}
 	ans := make([]Nat, 0, j-i)
 	var k Nat
 	for k = i; k < j; k++ {
 		ans = append(ans, k)
 	}
-	return ans
+	return slice.From(ans).Iter()
 }
 
 type IntIter struct {
