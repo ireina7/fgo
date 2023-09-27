@@ -50,3 +50,11 @@ func TestForEach(t *testing.T) {
 		fmt.Println(i, x)
 	})
 }
+
+func TestCollect(t *testing.T) {
+	xs := Make(1, 2, 3, 4, 5, -7)
+	iter := xs.Iter()
+	var collector interfaces.Collector[SliceKind, int] = NewSliceCollector[int]()
+	ys := collector.Collect(iter)
+	t.Log("Collected", ys)
+}

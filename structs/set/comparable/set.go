@@ -1,6 +1,11 @@
-package set
+package comparable
 
-import "github.com/ireina7/fgo/types"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/ireina7/fgo/types"
+)
 
 type SetKind any
 
@@ -19,6 +24,18 @@ func Make[A comparable](xs ...A) Set[A] {
 		ss[x] = types.MakeUnit()
 	}
 	return ss
+}
+
+func (ss Set[A]) String() string {
+	xs := Map(ss, func(a A) string {
+		return fmt.Sprintf("%v", a)
+	})
+	ys := make([]string, 0)
+	for x := range xs {
+		ys = append(ys, x)
+	}
+	content := strings.Join(ys, ", ")
+	return fmt.Sprintf("Set{%s}", content)
 }
 
 func (ss Set[A]) Has(a A) bool {

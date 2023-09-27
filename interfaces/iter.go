@@ -3,6 +3,7 @@ package interfaces
 import (
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/tuple"
+	"github.com/ireina7/fgo/types"
 )
 
 type Iterator[A any] interface {
@@ -11,6 +12,10 @@ type Iterator[A any] interface {
 
 type Iterable[A any] interface {
 	Iter() Iterator[A]
+}
+
+type FromIterator[F_, A any] interface {
+	FromIter(Iterator[A]) types.HKT[F_, A]
 }
 
 func For[A any](xs Iterable[A], f func(A)) {

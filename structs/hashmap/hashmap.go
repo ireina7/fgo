@@ -21,7 +21,7 @@ func (hm HashMap[K, V]) Set(key K, v V) HashMap[K, V] {
 	return hm
 }
 
-func (hm HashMap[K, V]) Contains(key K) bool {
+func (hm HashMap[K, V]) Has(key K) bool {
 	_, exist := hm[key]
 	return exist
 }

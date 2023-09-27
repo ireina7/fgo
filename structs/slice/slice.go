@@ -198,3 +198,27 @@ func (self *Distinct[A]) Distinct(xs Slice[A]) Slice[A] {
 	}
 	return ys
 }
+
+type SliceFromIter[A any] struct{}
+
+func (self *SliceFromIter[A]) FromIter(iter interfaces.Iterator[A]) types.HKT[SliceKind, A] {
+	xs := Empty[A]()
+	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
+		xs = xs.Append(option.Get(x))
+	}
+	return xs
+}
+
+type SliceCollector[A any] struct {
+	interfaces.FromIterator[SliceKind, A]
+}
+
+func NewSliceCollector[A any]() *SliceCollector[A] {
+	return &SliceCollector[A]{
+		FromIterator: &SliceFromIter[A]{},
+	}
+}
+
+func (co *SliceCollector[A]) Collect(iter interfaces.Iterator[A]) types.HKT[SliceKind, A] {
+	return co.FromIter(iter)
+}
