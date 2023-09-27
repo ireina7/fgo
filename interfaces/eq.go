@@ -1,7 +1,7 @@
 package interfaces
 
-type Eq[A any] interface {
-	Equal(A, A) bool
+type Eq[A, B any] interface {
+	Equal(A, B) bool
 }
 
 type Prelude[T comparable] struct{}

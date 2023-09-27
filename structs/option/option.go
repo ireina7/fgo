@@ -27,6 +27,14 @@ func From[A any](x *A) Option[A] {
 	return Some[A]{Value: *x}
 }
 
+func Nothing[A any]() Option[A] {
+	return None[A]{}
+}
+
+func Just[A any](a A) Option[A] {
+	return Some[A]{Value: a}
+}
+
 func IsNone[A any](x Option[A]) bool {
 	switch x.(type) {
 	case None[A]:
@@ -40,13 +48,11 @@ func Get[A any](x Option[A]) A {
 }
 
 func Map[A, B any](fa Option[A], f func(A) B) Option[B] {
-	var y B
 	switch x := fa.(type) {
 	case Some[A]:
-		y = f(x.Value)
-		return From(&y)
+		return Just(f(x.Value))
 	default:
-		return From[B](nil)
+		return Nothing[B]()
 	}
 }
 
@@ -64,7 +70,7 @@ func For[A any](fa Option[A], f func(A)) {
 
 func FlatMap[A, B any](ma Option[A], f func(A) Option[B]) Option[B] {
 	if IsNone(ma) {
-		return None[B]{}
+		return Nothing[B]()
 	}
 	a := Get(ma)
 	return f(a)
