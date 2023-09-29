@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/ireina7/fgo/interfaces"
+	"github.com/ireina7/fgo/interfaces/collection"
+	"github.com/ireina7/fgo/structs/tuple"
 )
 
 func TestHashMap(t *testing.T) {
@@ -14,5 +16,8 @@ func TestHashMap(t *testing.T) {
 	)
 	hm.Set("first", 1)
 	hm.Set("second", 2)
-	t.Log(hm.Get("first"))
+	hm.Set("third", 3)
+	collection.For[tuple.Tuple2[string, int]](hm, func(xs tuple.Tuple2[string, int]) {
+		t.Log(xs.A, xs.B)
+	})
 }

@@ -1,14 +1,14 @@
 package interfaces
 
 import (
+	"github.com/ireina7/fgo/interfaces/collection"
 	"github.com/ireina7/fgo/interfaces/impl"
-	"github.com/ireina7/fgo/interfaces/iter"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/types"
 )
 
 type SeqInterface[F_, A any] interface {
-	impl.Implement[types.HKT[F_, A], iter.Iterable[A]]
+	impl.Implement[types.HKT[F_, A], collection.Iterable[A]]
 
 	Get(types.HKT[F_, A], int) option.Option[A]
 	Len(types.HKT[F_, A]) int

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ireina7/fgo/interfaces/iter"
+	"github.com/ireina7/fgo/interfaces/collection"
 	"github.com/ireina7/fgo/structs/function"
 	"github.com/ireina7/fgo/structs/number"
 	"github.com/ireina7/fgo/structs/option"
@@ -14,7 +14,7 @@ import (
 type LazyFunctorKind types.Kind
 
 type LazyFunctor[A, B any] struct {
-	iter iter.Iterator[A]
+	iter collection.Iterator[A]
 	f    func(A) B
 }
 
@@ -25,7 +25,7 @@ func (functor LazyFunctor[A, B]) Next() option.Option[B] {
 	return option.Map(functor.iter.Next(), functor.f)
 }
 
-func (functor LazyFunctor[A, B]) Iter() iter.Iterator[B] {
+func (functor LazyFunctor[A, B]) Iter() collection.Iterator[B] {
 	return functor
 }
 
@@ -33,14 +33,14 @@ type LazyFunctorImplIterable[A, B any] struct{}
 
 func (impl *LazyFunctorImplIterable[A, B]) Impl(
 	functor types.HKT[LazyFunctorKind, B],
-) iter.Iterable[B] {
+) collection.Iterable[B] {
 	return functor.(LazyFunctor[A, B])
 }
 
 type LazyFunctorFromIterator[A, B any] struct{}
 
 func (self *LazyFunctorFromIterator[A, B]) FromIter(
-	iter iter.Iterator[B],
+	iter collection.Iterator[B],
 ) types.HKT[LazyFunctorKind, B] {
 	return LazyFunctor[B, B]{
 		iter: iter,
@@ -49,7 +49,7 @@ func (self *LazyFunctorFromIterator[A, B]) FromIter(
 }
 
 func TestLazyFunctor(t *testing.T) {
-	functor := &iter.IterFunctor[LazyFunctorKind, int, int]{
+	functor := &collection.IterFunctor[LazyFunctorKind, int, int]{
 		Implement:    &LazyFunctorImplIterable[int, int]{},
 		FromIterator: &LazyFunctorFromIterator[int, int]{},
 	}
@@ -66,7 +66,7 @@ func TestLazyFunctor(t *testing.T) {
 		return y + 1
 	})
 
-	functorS := &iter.IterFunctor[LazyFunctorKind, int, string]{
+	functorS := &collection.IterFunctor[LazyFunctorKind, int, string]{
 		Implement:    &LazyFunctorImplIterable[int, int]{},
 		FromIterator: &LazyFunctorFromIterator[int, string]{},
 	}
@@ -75,7 +75,7 @@ func TestLazyFunctor(t *testing.T) {
 		return fmt.Sprintf("{number:%d}", z)
 	})
 
-	iter.For[string](ss.(LazyFunctor[string, string]), func(x string) {
+	collection.For[string](ss.(LazyFunctor[string, string]), func(x string) {
 		t.Log(x)
 	})
 }

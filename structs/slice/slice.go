@@ -2,7 +2,7 @@ package slice
 
 import (
 	"github.com/ireina7/fgo/interfaces"
-	"github.com/ireina7/fgo/interfaces/iter"
+	"github.com/ireina7/fgo/interfaces/collection"
 	"github.com/ireina7/fgo/structs/hashmap/generic"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/search/ordered"
@@ -206,7 +206,7 @@ func (iter *sliceIter[A]) Next() option.Option[A] {
 	return res
 }
 
-func (s Slice[A]) Iter() iter.Iterator[A] {
+func (s Slice[A]) Iter() collection.Iterator[A] {
 	return &sliceIter[A]{
 		s: s[:],
 	}
@@ -244,7 +244,7 @@ func (self *Contain[A]) Has(xs Slice[A], x A) bool {
 
 type SliceFromIter[A any] struct{}
 
-func (self *SliceFromIter[A]) FromIter(iter iter.Iterator[A]) types.HKT[SliceKind, A] {
+func (self *SliceFromIter[A]) FromIter(iter collection.Iterator[A]) types.HKT[SliceKind, A] {
 	xs := Empty[A]()
 	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
 		xs = xs.Append(option.Get(x))
@@ -253,7 +253,7 @@ func (self *SliceFromIter[A]) FromIter(iter iter.Iterator[A]) types.HKT[SliceKin
 }
 
 type SliceCollector[A any] struct {
-	iter.FromIterator[SliceKind, A]
+	collection.FromIterator[SliceKind, A]
 }
 
 func NewSliceCollector[A any]() *SliceCollector[A] {
@@ -262,6 +262,6 @@ func NewSliceCollector[A any]() *SliceCollector[A] {
 	}
 }
 
-func (co *SliceCollector[A]) Collect(iter iter.Iterator[A]) types.HKT[SliceKind, A] {
+func (co *SliceCollector[A]) Collect(iter collection.Iterator[A]) types.HKT[SliceKind, A] {
 	return co.FromIter(iter)
 }

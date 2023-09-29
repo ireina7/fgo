@@ -1,7 +1,7 @@
 package number
 
 import (
-	"github.com/ireina7/fgo/interfaces/iter"
+	"github.com/ireina7/fgo/interfaces/collection"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/slice"
 )
@@ -20,9 +20,9 @@ func (enum *EnumInt) ToEnum(i int) int {
 	return i
 }
 
-func (enum *EnumInt) Range(i, j int) iter.Iterator[int] {
+func (enum *EnumInt) Range(i, j int) collection.Iterator[int] {
 	if j <= i {
-		return iter.EmptyIter[int]()
+		return collection.EmptyIter[int]()
 	}
 	ans := make([]int, 0, j-i)
 	for k := i; k < j; k++ {
@@ -57,9 +57,9 @@ func (enum *EnumNat) ToEnum(i int) Nat {
 	return Nat(uint(i))
 }
 
-func (enum *EnumNat) Range(i, j Nat) iter.Iterator[Nat] {
+func (enum *EnumNat) Range(i, j Nat) collection.Iterator[Nat] {
 	if j <= i {
-		return iter.EmptyIter[Nat]()
+		return collection.EmptyIter[Nat]()
 	}
 	ans := make([]Nat, 0, j-i)
 	var k Nat

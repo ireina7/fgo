@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/ireina7/fgo/interfaces"
-	"github.com/ireina7/fgo/interfaces/iter"
+	"github.com/ireina7/fgo/interfaces/collection"
 	"github.com/ireina7/fgo/structs/number"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/slice"
@@ -39,7 +39,7 @@ func TestSliceIterZip(t *testing.T) {
 	xs := slice.Make(1, 2, 3, 4, 5, 6, -7)
 	sliceIter := xs.Iter()
 	indexIter := number.IntIter{}.From(0)
-	iter := iter.Zip[int, int](indexIter, sliceIter)
+	iter := collection.Zip[int, int](indexIter, sliceIter)
 	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
 		y := option.Get(x)
 		fmt.Println(y.A, y.B)
@@ -48,7 +48,7 @@ func TestSliceIterZip(t *testing.T) {
 
 func TestForEach(t *testing.T) {
 	xs := slice.Make(1, 2, 3, 4, 5, 6)
-	iter.ForEach[int](xs, func(i int, x int) {
+	collection.ForEach[int](xs, func(i int, x int) {
 		fmt.Println(i, x)
 	})
 }
@@ -56,7 +56,7 @@ func TestForEach(t *testing.T) {
 func TestCollect(t *testing.T) {
 	xs := slice.Make(1, 2, 3, 4, 5, -7)
 	p := xs.Iter()
-	var collector iter.Collector[slice.SliceKind, int] = slice.NewSliceCollector[int]()
+	var collector collection.Collector[slice.SliceKind, int] = slice.NewSliceCollector[int]()
 	ys := collector.Collect(p)
 	t.Log("Collected", ys)
 }
