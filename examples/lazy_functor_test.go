@@ -54,7 +54,7 @@ func TestLazyFunctor(t *testing.T) {
 		FromIterator: &LazyFunctorFromIterator[int, int]{},
 	}
 	xs := LazyFunctor[int, int]{
-		iter: number.NewEnumInt().Range(0, 7),
+		iter: number.NewEnumInt().Range(0, 10),
 		f:    function.Identity[int](),
 	}
 	ys := functor.Fmap(xs, func(x int) int {

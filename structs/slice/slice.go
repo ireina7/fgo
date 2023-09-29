@@ -199,6 +199,20 @@ func (self *Distinct[A]) Distinct(xs Slice[A]) Slice[A] {
 	return ys
 }
 
+type Contain[A any] struct {
+	interfaces.Eq[A, A]
+}
+
+func (self *Contain[A]) Has(xs Slice[A], x A) bool {
+	iter := xs.Iter()
+	for y := iter.Next(); !option.IsNone(y); y = iter.Next() {
+		if self.Equal(x, option.Get(y)) {
+			return true
+		}
+	}
+	return false
+}
+
 type SliceFromIter[A any] struct{}
 
 func (self *SliceFromIter[A]) FromIter(iter interfaces.Iterator[A]) types.HKT[SliceKind, A] {
