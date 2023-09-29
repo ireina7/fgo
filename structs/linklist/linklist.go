@@ -1,7 +1,7 @@
 package linklist
 
 import (
-	"github.com/ireina7/fgo/interfaces"
+	"github.com/ireina7/fgo/interfaces/iter"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/types"
 	"github.com/ireina7/fgo/util"
@@ -27,7 +27,7 @@ func Make[A any](xs ...A) List[A] {
 	return List[A]{head: *head.NextNode}
 }
 
-func (list List[A]) Iter() interfaces.Iterator[A] {
+func (list List[A]) Iter() iter.Iterator[A] {
 	return &listIter[A]{
 		node: &list.head,
 	}
@@ -35,7 +35,7 @@ func (list List[A]) Iter() interfaces.Iterator[A] {
 
 func (list List[A]) Len() int {
 	count := 0
-	interfaces.For[A](list, func(x A) {
+	iter.For[A](list, func(x A) {
 		count += 1
 	})
 	return count

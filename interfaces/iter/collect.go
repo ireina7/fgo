@@ -1,4 +1,4 @@
-package interfaces
+package iter
 
 import (
 	"github.com/ireina7/fgo/types"

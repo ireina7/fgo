@@ -25,3 +25,7 @@ func (hm HashMap[K, V]) Has(key K) bool {
 	_, exist := hm[key]
 	return exist
 }
+
+func (hm HashMap[K, V]) Delete(key K) {
+	delete(hm, key)
+}

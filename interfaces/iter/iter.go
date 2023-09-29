@@ -1,6 +1,7 @@
-package interfaces
+package iter
 
 import (
+	"github.com/ireina7/fgo/interfaces/impl"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/tuple"
 	"github.com/ireina7/fgo/types"
@@ -16,6 +17,12 @@ type Iterable[A any] interface {
 
 type FromIterator[F_, A any] interface {
 	FromIter(Iterator[A]) types.HKT[F_, A]
+}
+
+func Iterate[A any](iter Iterator[A], f func(A)) {
+	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
+		f(option.Get(x))
+	}
 }
 
 type emptyIter[A any] struct{}
@@ -105,7 +112,7 @@ func Zip[A, B any](xs Iterator[A], ys Iterator[B]) Iterator[tuple.Tuple2[A, B]] 
 }
 
 type IterFunctor[F_, A, B any] struct {
-	Implement[types.HKT[F_, A], Iterable[A]] //Well, we need summoner!
+	impl.Implement[types.HKT[F_, A], Iterable[A]] //Well, we need summoner!
 	FromIterator[F_, B]
 }
 

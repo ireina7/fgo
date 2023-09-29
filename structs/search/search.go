@@ -1,7 +1,8 @@
 package search
 
 import (
-	"github.com/ireina7/fgo/interfaces"
+	"github.com/ireina7/fgo/interfaces/impl"
+	"github.com/ireina7/fgo/interfaces/iter"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/ref"
 	"github.com/ireina7/fgo/types"
@@ -12,7 +13,7 @@ type Searching[F_, A any] interface {
 }
 
 type SearchLinear[F_, A any] struct {
-	interfaces.Implement[types.HKT[F_, A], interfaces.Iterable[A]]
+	impl.Implement[types.HKT[F_, A], iter.Iterable[A]]
 }
 
 func (s *SearchLinear[F_, A]) SearchBy(

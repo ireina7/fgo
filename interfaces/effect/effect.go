@@ -1,4 +1,4 @@
-package interfaces
+package effect
 
 type Exception interface {
 	Throw(error)

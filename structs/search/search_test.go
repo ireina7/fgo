@@ -3,7 +3,7 @@ package search
 import (
 	"testing"
 
-	"github.com/ireina7/fgo/interfaces"
+	"github.com/ireina7/fgo/interfaces/iter"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/ref"
 	"github.com/ireina7/fgo/structs/slice"
@@ -12,7 +12,7 @@ import (
 
 type sliceImpl[A any] struct{}
 
-func (impl *sliceImpl[A]) Impl(xs types.HKT[slice.SliceKind, A]) interfaces.Iterable[A] {
+func (impl *sliceImpl[A]) Impl(xs types.HKT[slice.SliceKind, A]) iter.Iterable[A] {
 	return xs.(slice.Slice[A])
 }
 

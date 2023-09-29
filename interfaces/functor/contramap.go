@@ -1,4 +1,4 @@
-package interfaces
+package functor
 
 import "github.com/ireina7/fgo/types"
 

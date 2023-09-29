@@ -1,4 +1,4 @@
-package interfaces
+package algebra
 
 import (
 	"github.com/ireina7/fgo/structs/option"
