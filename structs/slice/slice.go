@@ -3,6 +3,7 @@ package slice
 import (
 	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/interfaces/iter"
+	"github.com/ireina7/fgo/structs/hashmap/generic"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/search/ordered"
 	"github.com/ireina7/fgo/types"
@@ -56,6 +57,26 @@ func FoldLeft[A, B any](xs Slice[A], folder func(B, A, int) B, seed B) B {
 		seed = folder(seed, x, i)
 	}
 	return seed
+}
+
+type Grouping[A, B any] struct {
+	interfaces.Eq[B, B]
+	interfaces.Hash[B]
+}
+
+func (g Grouping[A, B]) GroupBy(xs Slice[A], f func(A) B) generic.HashMap[B, Slice[A]] {
+	hm := generic.Make[B, Slice[A]](g.Eq, g.Hash, 10)
+	for _, x := range xs {
+		k := f(x)
+		if !option.IsNone(hm.Get(k)) {
+			option.Map_(hm.Get(k), func(ss Slice[A]) {
+				hm.Set(k, ss.Append(x))
+			})
+		} else {
+			hm.Set(k, Make(x))
+		}
+	}
+	return hm
 }
 
 func (xs Slice[A]) Filter(f func(A) bool) Slice[A] {

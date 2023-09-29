@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/interfaces/iter"
 	"github.com/ireina7/fgo/structs/number"
 	"github.com/ireina7/fgo/structs/option"
@@ -66,4 +67,16 @@ func TestOperation(t *testing.T) {
 		return x * 2
 	})
 	t.Log(ys)
+}
+
+func TestGrouping(t *testing.T) {
+	xs := slice.Make(1, 2, 3, 4, 5, 6, 7, 8)
+	grouper := slice.Grouping[int, int]{
+		Eq:   &interfaces.Prelude[int]{},
+		Hash: &interfaces.HashInt{},
+	}
+	hm := grouper.GroupBy(xs, func(x int) int {
+		return x % 2
+	})
+	t.Logf("%#v", hm.Get(1))
 }

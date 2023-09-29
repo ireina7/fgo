@@ -13,3 +13,9 @@ func (hash *HashString) Hash(s string) uint64 {
 	h.Write([]byte(s))
 	return uint64(h.Sum32())
 }
+
+type HashInt struct{}
+
+func (hash *HashInt) Hash(i int) uint64 {
+	return uint64(i)
+}
