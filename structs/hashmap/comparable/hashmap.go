@@ -1,8 +1,16 @@
 package hashmap
 
-import "github.com/ireina7/fgo/structs/option"
+import (
+	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/types"
+)
+
+type HashMapKind types.Kind
 
 type HashMap[K comparable, V any] map[K]V
+
+func (HashMap[K, V]) Kind(HashMapKind) {}
+func (HashMap[K, V]) ElemType(V)       {}
 
 func From[K comparable, V any](m map[K]V) HashMap[K, V] {
 	return HashMap[K, V](m)
