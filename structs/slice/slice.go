@@ -284,3 +284,16 @@ func (self *SequenceSlice[F_, A]) Sequence(
 	}
 	return self.Pure(ys)
 }
+
+type sliceFunctor[A, B any] struct{}
+
+func (functor *sliceFunctor[A, B]) Fmap(
+	xs types.HKT[SliceKind, A],
+	f func(A) B,
+) types.HKT[SliceKind, B] {
+	return Map(xs.(Slice[A]), f)
+}
+
+func NewSliceFunctor[A, B any]() *sliceFunctor[A, B] {
+	return &sliceFunctor[A, B]{}
+}
