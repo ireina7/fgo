@@ -100,3 +100,17 @@ func (functor *resultFunctor[A, B]) Fmap(
 
 	return Map(xs.(Result[A]), f)
 }
+
+func NewResultFunctor[A, B any]() *resultFunctor[A, B] {
+	return &resultFunctor[A, B]{}
+}
+
+type resultApplicative[A any] struct{}
+
+func (self *resultApplicative[A]) Pure(a A) types.HKT[ResultKind, A] {
+	return From(a)
+}
+
+func NewResultApplicative[A any]() *resultApplicative[A] {
+	return &resultApplicative[A]{}
+}

@@ -297,3 +297,13 @@ func (functor *sliceFunctor[A, B]) Fmap(
 func NewSliceFunctor[A, B any]() *sliceFunctor[A, B] {
 	return &sliceFunctor[A, B]{}
 }
+
+type sliceApplicative[A any] struct{}
+
+func (self *sliceApplicative[A]) Pure(a A) types.HKT[SliceKind, A] {
+	return Make(a)
+}
+
+func NewSliceApplicative[A any]() *sliceApplicative[A] {
+	return &sliceApplicative[A]{}
+}
