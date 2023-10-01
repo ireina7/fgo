@@ -1,15 +1,16 @@
-package generic
+package generic_test
 
 import (
 	"testing"
 
 	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/interfaces/collection"
+	"github.com/ireina7/fgo/structs/hashmap/generic"
 	"github.com/ireina7/fgo/structs/tuple"
 )
 
 func TestHashMap(t *testing.T) {
-	hm := Make[string, int](
+	hm := generic.Make[string, int](
 		&interfaces.Prelude[string]{},
 		&interfaces.HashString{},
 		10,

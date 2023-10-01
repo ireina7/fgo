@@ -80,3 +80,36 @@ func TestGrouping(t *testing.T) {
 	})
 	t.Logf("%#v", hm.Get(1))
 }
+
+func TestSequence(t *testing.T) {
+	xs := slice.Make(
+		option.Just(1),
+		option.Just(3),
+		option.Nothing[int](),
+		option.Just(7),
+	)
+	sequence := &slice.SequenceSlice[option.OptionKind, int]{
+		Functor:     &optionFunctor[int, types.Unit]{},
+		Applicative: &optionApplicative[slice.Slice[int]]{},
+	}
+	ys := sequence.Sequence(
+		slice.Map(xs, func(x option.Option[int]) types.HKT[option.OptionKind, int] {
+			return x
+		}),
+	)
+	t.Logf("ys: %#v", ys)
+}
+
+type optionFunctor[A, B any] struct{}
+
+func (functor *optionFunctor[A, B]) Fmap(
+	xs types.HKT[option.OptionKind, A], f func(A) B,
+) types.HKT[option.OptionKind, B] {
+	return option.Map(xs.(option.Option[A]), f)
+}
+
+type optionApplicative[A any] struct{}
+
+func (self *optionApplicative[A]) Pure(a A) types.HKT[option.OptionKind, A] {
+	return option.Just(a)
+}

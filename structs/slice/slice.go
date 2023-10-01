@@ -3,6 +3,7 @@ package slice
 import (
 	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/interfaces/collection"
+	"github.com/ireina7/fgo/interfaces/functor"
 	"github.com/ireina7/fgo/structs/hashmap/generic"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/search/ordered"
@@ -264,4 +265,22 @@ func NewSliceCollector[A any]() *SliceCollector[A] {
 
 func (co *SliceCollector[A]) Collect(iter collection.Iterator[A]) types.HKT[SliceKind, A] {
 	return co.FromIter(iter)
+}
+
+type SequenceSlice[F_, A any] struct {
+	functor.Functor[F_, A, types.Unit]
+	interfaces.Applicative[F_, Slice[A]]
+}
+
+func (self *SequenceSlice[F_, A]) Sequence(
+	xs Slice[types.HKT[F_, A]],
+) types.HKT[F_, Slice[A]] {
+	ys := Empty[A]()
+	for _, x := range xs {
+		self.Fmap(x, func(a A) types.Unit {
+			ys = ys.Append(a)
+			return types.MakeUnit()
+		})
+	}
+	return self.Pure(ys)
 }
