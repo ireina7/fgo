@@ -6,7 +6,7 @@ import (
 )
 
 type Traversable[F_, G_, A, B any] interface {
-	Apply[F_, A, B]
+	// Apply[F_, A, B]
 	Traverse(
 		types.HKT[G_, A],
 		func(A) types.HKT[F_, B],

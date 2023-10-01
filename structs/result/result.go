@@ -37,12 +37,12 @@ func IsErr[A any](res Result[A]) bool {
 	return !IsOK(res)
 }
 
-func Get[A any](res Ok[A]) A {
-	return res.Value
+func Get[A any](res Result[A]) A {
+	return res.(Ok[A]).Value
 }
 
-func GetErr[A any](res Err[A]) error {
-	return res.Error
+func GetErr[A any](res Result[A]) error {
+	return res.(Err[A]).Error
 }
 
 func Map[A, B any](res Result[A], f func(A) B) Result[B] {
@@ -71,7 +71,7 @@ func FlatMap[A, B any](res Result[A], f func(A) Result[B]) Result[B] {
 	if IsErr(res) {
 		return FromErr[B](res.(Err[A]).Error)
 	}
-	return f(Get(res.(Ok[A])))
+	return f(Get(res))
 }
 
 func AndThen[A, B any](res Result[A], f func(A) Result[B]) Result[B] {
