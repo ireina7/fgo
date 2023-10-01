@@ -90,3 +90,13 @@ func Unpack[A any](res Result[A]) (A, error) {
 	}
 	return a, err
 }
+
+type resultFunctor[A, B any] struct{}
+
+func (functor *resultFunctor[A, B]) Fmap(
+	xs types.HKT[ResultKind, A],
+	f func(A) B,
+) types.HKT[ResultKind, B] {
+
+	return Map(xs.(Result[A]), f)
+}
