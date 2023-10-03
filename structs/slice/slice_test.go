@@ -9,6 +9,7 @@ import (
 	"github.com/ireina7/fgo/structs/number"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/slice"
+	"github.com/ireina7/fgo/structs/tuple"
 	"github.com/ireina7/fgo/types"
 	"github.com/ireina7/fgo/util"
 )
@@ -88,9 +89,16 @@ func TestSequence(t *testing.T) {
 		option.Nothing[int](),
 		option.Just(7),
 	)
+	// sequence := &slice.SequenceSlice[option.OptionKind, int]{
+	// 	Functor: &optionFunctor[int, types.Unit]{},
+	// 	Pure:    &optionApplicative[slice.Slice[int]]{},
+	// }
 	sequence := &slice.SequenceSlice[option.OptionKind, int]{
-		Functor:     &optionFunctor[int, types.Unit]{},
-		Applicative: &optionApplicative[slice.Slice[int]]{},
+		TraverseSlice: &slice.TraverseSlice[option.OptionKind, types.HKT[option.OptionKind, int], int]{
+			Pure:    &optionPure[slice.Slice[int]]{},
+			Apply:   &optionApply[slice.Slice[int], int]{},
+			Functor: &optionFunctor[tuple.Tuple2[slice.Slice[int], int], slice.Slice[int]]{},
+		},
 	}
 	ys := sequence.Sequence(
 		slice.Map(xs, func(x option.Option[int]) types.HKT[option.OptionKind, int] {
@@ -108,8 +116,26 @@ func (functor *optionFunctor[A, B]) Fmap(
 	return option.Map(xs.(option.Option[A]), f)
 }
 
-type optionApplicative[A any] struct{}
+type optionPure[A any] struct{}
 
-func (self *optionApplicative[A]) Pure(a A) types.HKT[option.OptionKind, A] {
+func (self *optionPure[A]) Pure(a A) types.HKT[option.OptionKind, A] {
 	return option.Just(a)
+}
+
+type optionApply[A, B any] struct{}
+
+func (self *optionApply[A, B]) Product(
+	fa types.HKT[option.OptionKind, A],
+	fb types.HKT[option.OptionKind, B],
+) types.HKT[option.OptionKind, tuple.Tuple2[A, B]] {
+	a := fa.(option.Option[A])
+	b := fb.(option.Option[B])
+	return option.FlatMap(a, func(a A) option.Option[tuple.Tuple2[A, B]] {
+		return option.Map(b, func(b B) tuple.Tuple2[A, B] {
+			return tuple.Tuple2[A, B]{
+				A: a,
+				B: b,
+			}
+		})
+	})
 }

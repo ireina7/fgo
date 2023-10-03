@@ -1,6 +1,6 @@
 package interfaces
 
 type Monad[F_, A, B any] interface {
-	Applicative[F_, A]
+	Apply[F_, A, B]
 	Bind[F_, A, B]
 }

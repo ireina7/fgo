@@ -4,9 +4,11 @@ import (
 	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/interfaces/collection"
 	"github.com/ireina7/fgo/interfaces/functor"
+	"github.com/ireina7/fgo/structs/function"
 	"github.com/ireina7/fgo/structs/hashmap/generic"
 	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/search/ordered"
+	"github.com/ireina7/fgo/structs/tuple"
 	"github.com/ireina7/fgo/types"
 )
 
@@ -268,21 +270,34 @@ func (co *SliceCollector[A]) Collect(iter collection.Iterator[A]) types.HKT[Slic
 }
 
 type SequenceSlice[F_, A any] struct {
-	functor.Functor[F_, A, types.Unit]
-	interfaces.Applicative[F_, Slice[A]]
+	*TraverseSlice[F_, types.HKT[F_, A], A]
 }
 
 func (self *SequenceSlice[F_, A]) Sequence(
 	xs Slice[types.HKT[F_, A]],
 ) types.HKT[F_, Slice[A]] {
-	ys := Empty[A]()
+	return self.Traverse(xs, function.Identity[types.HKT[F_, A]]())
+}
+
+type TraverseSlice[F_, A, B any] struct {
+	interfaces.Pure[F_, Slice[B]]
+	interfaces.Apply[F_, Slice[B], B]
+	functor.Functor[F_, tuple.Tuple2[Slice[B], B], Slice[B]]
+}
+
+func (self *TraverseSlice[F_, A, B]) Traverse(
+	xs Slice[A],
+	f func(A) types.HKT[F_, B],
+) types.HKT[F_, Slice[B]] {
+	ys := self.Pure.Pure(Empty[B]())
 	for _, x := range xs {
-		self.Fmap(x, func(a A) types.Unit {
-			ys = ys.Append(a)
-			return types.MakeUnit()
+		y := f(x)
+		p := self.Product(ys, y)
+		ys = self.Fmap(p, func(t tuple.Tuple2[Slice[B], B]) Slice[B] {
+			return t.A.Append(t.B)
 		})
 	}
-	return self.Pure(ys)
+	return ys
 }
 
 type sliceFunctor[A, B any] struct{}
@@ -298,12 +313,12 @@ func NewSliceFunctor[A, B any]() *sliceFunctor[A, B] {
 	return &sliceFunctor[A, B]{}
 }
 
-type sliceApplicative[A any] struct{}
+type slicePure[A any] struct{}
 
-func (self *sliceApplicative[A]) Pure(a A) types.HKT[SliceKind, A] {
+func (self *slicePure[A]) Pure(a A) types.HKT[SliceKind, A] {
 	return Make(a)
 }
 
-func NewSliceApplicative[A any]() *sliceApplicative[A] {
-	return &sliceApplicative[A]{}
+func NewSlicePure[A any]() *slicePure[A] {
+	return &slicePure[A]{}
 }
