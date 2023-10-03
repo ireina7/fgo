@@ -7,6 +7,7 @@ import (
 	"github.com/ireina7/fgo/structs/function"
 	"github.com/ireina7/fgo/structs/hashmap/generic"
 	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/result"
 	"github.com/ireina7/fgo/structs/search/ordered"
 	"github.com/ireina7/fgo/structs/tuple"
 	"github.com/ireina7/fgo/types"
@@ -298,6 +299,40 @@ func (self *TraverseSlice[F_, A, B]) Traverse(
 		})
 	}
 	return ys
+}
+
+type TraverseResult[A, B any] struct{}
+
+func (self *TraverseResult[A, B]) Traverse(
+	xs Slice[A], f func(A) result.Result[B],
+) result.Result[Slice[B]] {
+	ys := Empty[B]()
+	for _, x := range xs {
+		y := f(x)
+		if result.IsErr(y) {
+			return result.FromErr[Slice[B]](result.GetErr(y))
+		}
+		ys = ys.Append(result.Get(y))
+	}
+	return result.From(ys)
+}
+
+type TraverseOption[A, B any] struct{}
+
+func (self *TraverseOption[A, B]) Traverse(
+	xs Slice[A],
+	f func(A) option.Option[B],
+) option.Option[Slice[B]] {
+
+	ys := Empty[B]()
+	for _, x := range xs {
+		y := f(x)
+		if option.IsNone(y) {
+			return option.Nothing[Slice[B]]()
+		}
+		ys = ys.Append(option.Get(y))
+	}
+	return option.Just(ys)
 }
 
 type sliceFunctor[A, B any] struct{}
