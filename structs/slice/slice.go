@@ -155,6 +155,12 @@ func (ys Slice[A]) ForEach(f func(int, A)) {
 	}
 }
 
+func (xs Slice[A]) For(f func(A)) {
+	xs.ForEach(func(_ int, a A) {
+		f(a)
+	})
+}
+
 func (ys Slice[A]) Set(index int, x A) Slice[A] {
 	ys[index] = x
 	return ys

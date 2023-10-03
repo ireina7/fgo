@@ -56,6 +56,14 @@ func Map[A, B any](res Result[A], f func(A) B) Result[B] {
 	return ans
 }
 
+func For[A any](res Result[A], f func(a A)) {
+	switch x := res.(type) {
+	case Ok[A]:
+		f(x.Value)
+	default:
+	}
+}
+
 func MapErr[A any](res Result[A], f func(error) error) Result[A] {
 	var ans Result[A]
 	switch x := res.(type) {
@@ -65,6 +73,14 @@ func MapErr[A any](res Result[A], f func(error) error) Result[A] {
 		ans = Err[A]{Error: f(x.Error)}
 	}
 	return ans
+}
+
+func ForErr[A any](res Result[A], f func(error)) {
+	switch x := res.(type) {
+	case Err[A]:
+		f(x.Error)
+	default:
+	}
 }
 
 func FlatMap[A, B any](res Result[A], f func(A) Result[B]) Result[B] {
