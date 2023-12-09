@@ -2,7 +2,7 @@ package linklist
 
 import (
 	"github.com/ireina7/fgo/interfaces/collection"
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/types"
 	"github.com/ireina7/fgo/util"
 )
@@ -58,13 +58,13 @@ type listIter[A any] struct {
 	node *ListNode[A]
 }
 
-func (iter *listIter[A]) Next() option.Option[A] {
+func (iter *listIter[A]) Next() maybe.Maybe[A] {
 	if iter.node == nil {
-		return option.From[A](nil)
+		return maybe.From[A](nil)
 	}
 	val := iter.node.Value
 	iter.node = iter.node.NextNode
-	return option.From(&val)
+	return maybe.From(&val)
 }
 
 type ListNode[A any] struct {

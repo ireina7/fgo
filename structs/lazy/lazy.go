@@ -1,28 +1,28 @@
 package lazy
 
 import (
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/types"
 )
 
 type LazyKind types.Kind
 
 type Lazy[A any] struct {
-	val     option.Option[A]
+	val     maybe.Maybe[A]
 	produce func() A
 }
 
 func From[A any](f func() A) *Lazy[A] {
 	return &Lazy[A]{
-		val:     option.From[A](nil),
+		val:     maybe.From[A](nil),
 		produce: f,
 	}
 }
 
 func (v *Lazy[A]) Get() A {
-	if option.IsNone(v.val) {
+	if maybe.IsNone(v.val) {
 		val := v.produce()
-		v.val = option.From(&val)
+		v.val = maybe.From(&val)
 	}
-	return option.Get(v.val)
+	return maybe.Get(v.val)
 }

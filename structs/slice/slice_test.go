@@ -6,8 +6,8 @@ import (
 
 	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/interfaces/collection"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/structs/number"
-	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/structs/slice"
 	"github.com/ireina7/fgo/structs/tuple"
 	"github.com/ireina7/fgo/types"
@@ -41,8 +41,8 @@ func TestSliceIterZip(t *testing.T) {
 	sliceIter := xs.Iter()
 	indexIter := number.IntIter{}.From(0)
 	iter := collection.Zip[int, int](indexIter, sliceIter)
-	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
-		y := option.Get(x)
+	for x := iter.Next(); !maybe.IsNone(x); x = iter.Next() {
+		y := maybe.Get(x)
 		fmt.Println(y.A, y.B)
 	}
 }
@@ -84,24 +84,24 @@ func TestGrouping(t *testing.T) {
 
 func TestSequence(t *testing.T) {
 	xs := slice.Make(
-		option.Just(1),
-		option.Just(3),
-		option.Nothing[int](),
-		option.Just(7),
+		maybe.Some(1),
+		maybe.Some(3),
+		maybe.None[int](),
+		maybe.Some(7),
 	)
 	// sequence := &slice.SequenceSlice[option.OptionKind, int]{
 	// 	Functor: &optionFunctor[int, types.Unit]{},
 	// 	Pure:    &optionApplicative[slice.Slice[int]]{},
 	// }
-	sequence := &slice.SequenceSlice[option.OptionKind, int]{
-		TraverseSlice: &slice.TraverseSlice[option.OptionKind, types.HKT[option.OptionKind, int], int]{
+	sequence := &slice.SequenceSlice[maybe.MaybeKind, int]{
+		TraverseSlice: &slice.TraverseSlice[maybe.MaybeKind, types.HKT[maybe.MaybeKind, int], int]{
 			Pure:    &optionPure[slice.Slice[int]]{},
 			Apply:   &optionApply[slice.Slice[int], int]{},
 			Functor: &optionFunctor[tuple.Tuple2[slice.Slice[int], int], slice.Slice[int]]{},
 		},
 	}
 	ys := sequence.Sequence(
-		slice.Map(xs, func(x option.Option[int]) types.HKT[option.OptionKind, int] {
+		slice.Map(xs, func(x maybe.Maybe[int]) types.HKT[maybe.MaybeKind, int] {
 			return x
 		}),
 	)
@@ -111,27 +111,27 @@ func TestSequence(t *testing.T) {
 type optionFunctor[A, B any] struct{}
 
 func (functor *optionFunctor[A, B]) Fmap(
-	xs types.HKT[option.OptionKind, A], f func(A) B,
-) types.HKT[option.OptionKind, B] {
-	return option.Map(xs.(option.Option[A]), f)
+	xs types.HKT[maybe.MaybeKind, A], f func(A) B,
+) types.HKT[maybe.MaybeKind, B] {
+	return maybe.Map(xs.(maybe.Maybe[A]), f)
 }
 
 type optionPure[A any] struct{}
 
-func (self *optionPure[A]) Pure(a A) types.HKT[option.OptionKind, A] {
-	return option.Just(a)
+func (self *optionPure[A]) Pure(a A) types.HKT[maybe.MaybeKind, A] {
+	return maybe.Some(a)
 }
 
 type optionApply[A, B any] struct{}
 
 func (self *optionApply[A, B]) Product(
-	fa types.HKT[option.OptionKind, A],
-	fb types.HKT[option.OptionKind, B],
-) types.HKT[option.OptionKind, tuple.Tuple2[A, B]] {
-	a := fa.(option.Option[A])
-	b := fb.(option.Option[B])
-	return option.FlatMap(a, func(a A) option.Option[tuple.Tuple2[A, B]] {
-		return option.Map(b, func(b B) tuple.Tuple2[A, B] {
+	fa types.HKT[maybe.MaybeKind, A],
+	fb types.HKT[maybe.MaybeKind, B],
+) types.HKT[maybe.MaybeKind, tuple.Tuple2[A, B]] {
+	a := fa.(maybe.Maybe[A])
+	b := fb.(maybe.Maybe[B])
+	return maybe.FlatMap(a, func(a A) maybe.Maybe[tuple.Tuple2[A, B]] {
+		return maybe.Map(b, func(b B) tuple.Tuple2[A, B] {
 			return tuple.Tuple2[A, B]{
 				A: a,
 				B: b,

@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/ireina7/fgo/interfaces"
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"golang.org/x/exp/constraints"
 )
 
@@ -193,7 +193,7 @@ func (list *Skiplist[A]) Contains(val A) bool {
 	return false
 }
 
-func (list *Skiplist[A]) Get(val A) option.Option[A] {
+func (list *Skiplist[A]) Get(val A) maybe.Maybe[A] {
 	list.lock.RLock()
 	level := list.nLevels - 1
 	list.lock.RUnlock()
@@ -212,11 +212,11 @@ func (list *Skiplist[A]) Get(val A) option.Option[A] {
 
 		// is the next element what I seek
 		if curr != nil && list.ord.Compare(curr.value, val) == 0 && curr.fullyLinked && !curr.marked {
-			return option.From(&curr.value)
+			return maybe.From(&curr.value)
 		}
 	}
 	// not found
-	return option.From[A](nil)
+	return maybe.From[A](nil)
 }
 
 func (list *Skiplist[A]) Insert(v A) bool {

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/ireina7/fgo/interfaces/collection"
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/structs/ref"
 	"github.com/ireina7/fgo/structs/slice"
 	"github.com/ireina7/fgo/types"
@@ -24,7 +24,7 @@ func TestLinear(t *testing.T) {
 	ans := find.SearchBy(xs, func(x int) bool {
 		return x == -1
 	})
-	t.Logf("%#v", option.Map(ans, func(ref ref.Ref[int]) int {
+	t.Logf("%#v", maybe.Map(ans, func(ref ref.Ref[int]) int {
 		return ref.Deref()
 	}))
 }

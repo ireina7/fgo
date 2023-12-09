@@ -2,7 +2,7 @@ package number
 
 import (
 	"github.com/ireina7/fgo/interfaces/collection"
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/structs/slice"
 )
 
@@ -79,8 +79,8 @@ func (IntIter) From(start int) *IntIter {
 	}
 }
 
-func (iter *IntIter) Next() option.Option[int] {
+func (iter *IntIter) Next() maybe.Maybe[int] {
 	num := iter.curr
 	iter.curr += 1
-	return option.From(&num)
+	return maybe.From(&num)
 }

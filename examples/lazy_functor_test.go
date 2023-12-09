@@ -6,8 +6,8 @@ import (
 
 	"github.com/ireina7/fgo/interfaces/collection"
 	"github.com/ireina7/fgo/structs/function"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/structs/number"
-	"github.com/ireina7/fgo/structs/option"
 	"github.com/ireina7/fgo/types"
 )
 
@@ -21,8 +21,8 @@ type LazyFunctor[A, B any] struct {
 func (LazyFunctor[A, B]) Kind(LazyFunctorKind) {}
 func (LazyFunctor[A, B]) ElemType(B)           {}
 
-func (functor LazyFunctor[A, B]) Next() option.Option[B] {
-	return option.Map(functor.iter.Next(), functor.f)
+func (functor LazyFunctor[A, B]) Next() maybe.Maybe[B] {
+	return maybe.Map(functor.iter.Next(), functor.f)
 }
 
 func (functor LazyFunctor[A, B]) Iter() collection.Iterator[B] {

@@ -2,21 +2,21 @@ package channel
 
 type Chan[A any] chan A
 
-type ChanSend[A any] chan<- A
-type ChanRecv[A any] <-chan A
+type Send[A any] chan<- A
+type Recv[A any] <-chan A
 
 type ChanImplChanSend[A any] struct{}
 
-func (impl *ChanImplChanSend[A]) Impl(ch Chan[A]) ChanSend[A] {
+func (impl *ChanImplChanSend[A]) Impl(ch Chan[A]) Send[A] {
 	var chSend chan<- A = ch
-	return ChanSend[A](chSend)
+	return Send[A](chSend)
 }
 
 type ChanImplChanRecv[A any] struct{}
 
-func (impl *ChanImplChanRecv[A]) Impl(ch Chan[A]) ChanRecv[A] {
+func (impl *ChanImplChanRecv[A]) Impl(ch Chan[A]) Recv[A] {
 	var chRecv <-chan A = ch
-	return ChanRecv[A](chRecv)
+	return Recv[A](chRecv)
 }
 
 func From[A any](ch chan A) Chan[A] {

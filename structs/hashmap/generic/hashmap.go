@@ -3,7 +3,7 @@ package generic
 import (
 	"github.com/ireina7/fgo/interfaces"
 	"github.com/ireina7/fgo/interfaces/collection"
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/structs/tuple"
 	"github.com/ireina7/fgo/types"
 	"github.com/zyedidia/generic/hashmap"
@@ -32,12 +32,12 @@ func (hm HashMap[K, V]) Set(key K, v V) {
 	hm.hmap.Put(key, v)
 }
 
-func (hm HashMap[K, V]) Get(key K) option.Option[V] {
+func (hm HashMap[K, V]) Get(key K) maybe.Maybe[V] {
 	v, exist := hm.hmap.Get(key)
 	if !exist {
-		return option.Nothing[V]()
+		return maybe.None[V]()
 	}
-	return option.Just(v)
+	return maybe.Some(v)
 }
 
 func (hm HashMap[K, V]) Delete(key K) {
@@ -53,7 +53,7 @@ func (hm HashMap[K, V]) Len() int {
 }
 
 func (hm HashMap[K, V]) HasKey(key K) bool {
-	return !option.IsNone(hm.Get(key))
+	return !maybe.IsNone(hm.Get(key))
 }
 
 type hashMapIter[K, V any] struct {
@@ -61,11 +61,11 @@ type hashMapIter[K, V any] struct {
 	ch chan tuple.Tuple2[K, V]
 }
 
-func (iter *hashMapIter[K, V]) Next() option.Option[tuple.Tuple2[K, V]] {
+func (iter *hashMapIter[K, V]) Next() maybe.Maybe[tuple.Tuple2[K, V]] {
 	for x := range iter.ch {
-		return option.Just(x)
+		return maybe.Some(x)
 	}
-	return option.Nothing[tuple.Tuple2[K, V]]()
+	return maybe.None[tuple.Tuple2[K, V]]()
 }
 
 func (hm HashMap[K, V]) Iter() collection.Iterator[tuple.Tuple2[K, V]] {

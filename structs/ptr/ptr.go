@@ -1,7 +1,7 @@
 package ptr
 
 import (
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/types"
 )
 
@@ -26,11 +26,11 @@ func (ptr Ptr[A]) IsNil() bool {
 	return ptr.ptr == nil
 }
 
-func (ptr Ptr[A]) Deref() option.Option[A] {
+func (ptr Ptr[A]) Deref() maybe.Maybe[A] {
 	if ptr.IsNil() {
-		return option.From[A](nil)
+		return maybe.From[A](nil)
 	}
-	return option.From[A](ptr.ptr)
+	return maybe.From[A](ptr.ptr)
 }
 
 func Map[A, B any](ptr Ptr[A], f func(A) B) Ptr[B] {

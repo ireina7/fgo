@@ -6,7 +6,7 @@ import (
 	"github.com/ireina7/fgo/interfaces/functor"
 	"github.com/ireina7/fgo/structs/function"
 	"github.com/ireina7/fgo/structs/hashmap/generic"
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/structs/result"
 	"github.com/ireina7/fgo/structs/search/ordered"
 	"github.com/ireina7/fgo/structs/tuple"
@@ -72,8 +72,8 @@ func (g Grouping[A, B]) GroupBy(xs Slice[A], f func(A) B) generic.HashMap[B, Sli
 	hm := generic.Make[B, Slice[A]](g.Eq, g.Hash, 10)
 	for _, x := range xs {
 		k := f(x)
-		if !option.IsNone(hm.Get(k)) {
-			option.Map_(hm.Get(k), func(ss Slice[A]) {
+		if !maybe.IsNone(hm.Get(k)) {
+			maybe.Map_(hm.Get(k), func(ss Slice[A]) {
 				hm.Set(k, ss.Append(x))
 			})
 		} else {
@@ -110,32 +110,32 @@ func Flatten[A any](xxs Slice[Slice[A]]) Slice[A] {
 	return ys
 }
 
-func (xs Slice[A]) Last() option.Option[A] {
+func (xs Slice[A]) Last() maybe.Maybe[A] {
 	if len(xs) == 0 {
-		return option.From[A](nil)
+		return maybe.From[A](nil)
 	}
-	return option.From[A](&xs[len(xs)-1])
+	return maybe.From[A](&xs[len(xs)-1])
 }
 
-func (xs Slice[A]) Init() option.Option[Slice[A]] {
+func (xs Slice[A]) Init() maybe.Maybe[Slice[A]] {
 	if len(xs) == 0 {
-		return option.From[Slice[A]](nil)
+		return maybe.From[Slice[A]](nil)
 	}
-	return option.Some[Slice[A]]{Value: xs[0 : len(xs)-1]}
+	return maybe.Some[Slice[A]](xs[0 : len(xs)-1])
 }
 
-func (xs Slice[A]) Head() option.Option[A] {
+func (xs Slice[A]) Head() maybe.Maybe[A] {
 	if len(xs) == 0 {
-		return option.From[A](nil)
+		return maybe.From[A](nil)
 	}
-	return option.Some[A]{Value: xs[0]}
+	return maybe.Some[A](xs[0])
 }
 
-func (xs Slice[A]) Tail() option.Option[Slice[A]] {
+func (xs Slice[A]) Tail() maybe.Maybe[Slice[A]] {
 	if len(xs) == 0 {
-		return option.From[Slice[A]](nil)
+		return maybe.From[Slice[A]](nil)
 	}
-	return option.Some[Slice[A]]{Value: xs[1:]}
+	return maybe.Some[Slice[A]](xs[1:])
 }
 
 func (xs Slice[A]) Slice(start, end int) Slice[A] {
@@ -166,22 +166,22 @@ func (ys Slice[A]) Set(index int, x A) Slice[A] {
 	return ys
 }
 
-func (ys Slice[A]) Get(index int) option.Option[A] {
+func (ys Slice[A]) Get(index int) maybe.Maybe[A] {
 	if len(ys) > index {
-		return option.From(&ys[index])
+		return maybe.From(&ys[index])
 	}
-	return option.From[A](nil)
+	return maybe.From[A](nil)
 }
 
-func (ys Slice[A]) Insert(index int, x A) option.Option[Slice[A]] {
+func (ys Slice[A]) Insert(index int, x A) maybe.Maybe[Slice[A]] {
 	if len(ys) < index {
-		return option.From[Slice[A]](nil)
+		return maybe.From[Slice[A]](nil)
 	}
 	zs := ys[0:index]
 	zs = append(zs, x)
 	zs = append(zs, ys[index:]...)
 	ans := From(zs)
-	return option.From[Slice[A]](&ans)
+	return maybe.From[Slice[A]](&ans)
 }
 
 func (xs Slice[A]) Append(x ...A) Slice[A] {
@@ -196,7 +196,7 @@ func (xs Slice[A]) Len() int {
 func ZipBy[A, B, C any](xs Slice[A], ys Slice[B], zip func(A, B) C) Slice[C] {
 	zs := make([]C, ordered.PreludeMinMax[int]().Min(xs.Len(), ys.Len()))
 	xs.ForEach(func(i int, x A) {
-		option.Map_(ys.Get(i), func(y B) {
+		maybe.Map_(ys.Get(i), func(y B) {
 			zs[i] = zip(x, y)
 		})
 	})
@@ -207,11 +207,11 @@ type sliceIter[A any] struct {
 	s []A
 }
 
-func (iter *sliceIter[A]) Next() option.Option[A] {
+func (iter *sliceIter[A]) Next() maybe.Maybe[A] {
 	if len(iter.s) == 0 {
-		return option.From[A](nil)
+		return maybe.From[A](nil)
 	}
-	res := option.From[A](&iter.s[0])
+	res := maybe.From[A](&iter.s[0])
 	iter.s = iter.s[1:]
 	return res
 }
@@ -244,8 +244,8 @@ type Contain[A any] struct {
 
 func (self *Contain[A]) Has(xs Slice[A], x A) bool {
 	iter := xs.Iter()
-	for y := iter.Next(); !option.IsNone(y); y = iter.Next() {
-		if self.Equal(x, option.Get(y)) {
+	for y := iter.Next(); !maybe.IsNone(y); y = iter.Next() {
+		if self.Equal(x, maybe.Get(y)) {
 			return true
 		}
 	}
@@ -256,8 +256,8 @@ type SliceFromIter[A any] struct{}
 
 func (self *SliceFromIter[A]) FromIter(iter collection.Iterator[A]) types.HKT[SliceKind, A] {
 	xs := Empty[A]()
-	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
-		xs = xs.Append(option.Get(x))
+	for x := iter.Next(); !maybe.IsNone(x); x = iter.Next() {
+		xs = xs.Append(maybe.Get(x))
 	}
 	return xs
 }
@@ -327,18 +327,18 @@ type TraverseOption[A, B any] struct{}
 
 func (self *TraverseOption[A, B]) Traverse(
 	xs Slice[A],
-	f func(A) option.Option[B],
-) option.Option[Slice[B]] {
+	f func(A) maybe.Maybe[B],
+) maybe.Maybe[Slice[B]] {
 
 	ys := Empty[B]()
 	for _, x := range xs {
 		y := f(x)
-		if option.IsNone(y) {
-			return option.Nothing[Slice[B]]()
+		if maybe.IsNone(y) {
+			return maybe.None[Slice[B]]()
 		}
-		ys = ys.Append(option.Get(y))
+		ys = ys.Append(maybe.Get(y))
 	}
-	return option.Just(ys)
+	return maybe.Some(ys)
 }
 
 type sliceFunctor[A, B any] struct{}

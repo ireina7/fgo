@@ -1,13 +1,13 @@
 package interfaces
 
 import (
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/types"
 )
 
 // * For https://github.com/ireina7/summoner
 type Summoner[A any] interface {
-	Summon() option.Option[A]
+	Summon() maybe.Maybe[A]
 	Given(A)
 }
 
@@ -17,5 +17,5 @@ func Instance[A any]() Summoner[A] {
 
 func Inject() {
 	Instance[int]().Given(0)
-	Instance[types.HKT[option.OptionKind, int]]().Given(option.Just(7))
+	Instance[types.HKT[maybe.MaybeKind, int]]().Given(maybe.Some(7))
 }

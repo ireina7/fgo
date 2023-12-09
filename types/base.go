@@ -8,9 +8,14 @@ func MakeUnit() Unit {
 	return UnitValue
 }
 
-type absurd struct {
-	v int
+type absurd interface {
+	neverImplMe()
 }
+
 type Void absurd
+
+func IsVoid(x any) bool {
+	return x == nil
+}
 
 type Nil any

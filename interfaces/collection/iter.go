@@ -2,13 +2,13 @@ package collection
 
 import (
 	"github.com/ireina7/fgo/interfaces/impl"
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/structs/tuple"
 	"github.com/ireina7/fgo/types"
 )
 
 type Iterator[A any] interface {
-	Next() option.Option[A] //Stateful interface!
+	Next() maybe.Maybe[A] //Stateful interface!
 }
 
 type Iterable[A any] interface {
@@ -20,15 +20,15 @@ type FromIterator[F_, A any] interface {
 }
 
 func Iterate[A any](iter Iterator[A], f func(A)) {
-	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
-		f(option.Get(x))
+	for x := iter.Next(); !maybe.IsNone(x); x = iter.Next() {
+		f(maybe.Get(x))
 	}
 }
 
 type emptyIter[A any] struct{}
 
-func (iter *emptyIter[A]) Next() option.Option[A] {
-	return option.Nothing[A]()
+func (iter *emptyIter[A]) Next() maybe.Maybe[A] {
+	return maybe.None[A]()
 }
 
 func EmptyIter[A any]() Iterator[A] {
@@ -37,8 +37,8 @@ func EmptyIter[A any]() Iterator[A] {
 
 func For[A any](xs Iterable[A], f func(A)) {
 	iter := xs.Iter()
-	for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
-		option.Map_(x, func(x A) {
+	for x := iter.Next(); !maybe.IsNone(x); x = iter.Next() {
+		maybe.Map_(x, func(x A) {
 			f(x)
 		})
 	}
@@ -46,8 +46,8 @@ func For[A any](xs Iterable[A], f func(A)) {
 
 func ForEach[A any](xs Iterable[A], f func(int, A)) {
 	iter := xs.Iter()
-	for i, x := 0, iter.Next(); !option.IsNone(x); x = iter.Next() {
-		option.Map_(x, func(x A) {
+	for i, x := 0, iter.Next(); !maybe.IsNone(x); x = iter.Next() {
+		maybe.Map_(x, func(x A) {
 			f(i, x)
 		})
 		i += 1
@@ -60,8 +60,8 @@ func Range[A any](xs Iterable[A]) <-chan A {
 	iter := xs.Iter()
 	go func() {
 		defer close(ch)
-		for x := iter.Next(); !option.IsNone(x); x = iter.Next() {
-			option.Map_(x, func(x A) {
+		for x := iter.Next(); !maybe.IsNone(x); x = iter.Next() {
+			maybe.Map_(x, func(x A) {
 				ch <- x
 			})
 		}
@@ -87,12 +87,12 @@ type zipByIter[A, B, C any] struct {
 	f  func(A, B) C
 }
 
-func (iter *zipByIter[A, B, C]) Next() option.Option[C] {
+func (iter *zipByIter[A, B, C]) Next() maybe.Maybe[C] {
 	x := iter.xs.Next()
 	y := iter.ys.Next()
-	return option.FlatMap(x, func(x A) option.Option[C] {
-		return option.FlatMap(y, func(y B) option.Option[C] {
-			return option.Some[C]{Value: iter.f(x, y)}
+	return maybe.FlatMap(x, func(x A) maybe.Maybe[C] {
+		return maybe.FlatMap(y, func(y B) maybe.Maybe[C] {
+			return maybe.Some[C](iter.f(x, y))
 		})
 	})
 }
@@ -121,8 +121,8 @@ type IterMap[A, B any] struct {
 	f    func(A) B
 }
 
-func (iter *IterMap[A, B]) Next() option.Option[B] {
-	return option.Map(iter.iter.Next(), iter.f)
+func (iter *IterMap[A, B]) Next() maybe.Maybe[B] {
+	return maybe.Map(iter.iter.Next(), iter.f)
 }
 
 func (functor *IterFunctor[F_, A, B]) Fmap(

@@ -3,16 +3,16 @@ package algebra
 import (
 	"testing"
 
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/types"
 )
 
 func TestMonoid(t *testing.T) {
 	monoid := &HKTMonoid{}
-	xs := option.Some[string]{Value: "1"}
-	ys := option.Some[string]{Value: "2"}
+	xs := maybe.Some[string]("1")
+	ys := maybe.Some[string]("2")
 	// ys := option.None[string]{}
-	zs := foldl[option.OptionKind, string](monoid, ys, xs)
+	zs := foldl[maybe.MaybeKind, string](monoid, ys, xs)
 	t.Logf("%#v", zs)
 }
 

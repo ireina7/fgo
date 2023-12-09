@@ -1,7 +1,7 @@
 package hashmap
 
 import (
-	"github.com/ireina7/fgo/structs/option"
+	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/types"
 )
 
@@ -16,12 +16,12 @@ func From[K comparable, V any](m map[K]V) HashMap[K, V] {
 	return HashMap[K, V](m)
 }
 
-func (hm HashMap[K, V]) Get(key K) option.Option[V] {
+func (hm HashMap[K, V]) Get(key K) maybe.Maybe[V] {
 	v, exist := hm[key]
 	if !exist {
-		return option.From[V](nil)
+		return maybe.From[V](nil)
 	}
-	return option.From(&v)
+	return maybe.From(&v)
 }
 
 func (hm HashMap[K, V]) Set(key K, v V) HashMap[K, V] {

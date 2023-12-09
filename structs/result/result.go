@@ -49,9 +49,9 @@ func Map[A, B any](res Result[A], f func(A) B) Result[B] {
 	var ans Result[B]
 	switch x := res.(type) {
 	case Ok[A]:
-		ans = Ok[B]{Value: f(x.Value)}
+		ans = From[B](f(x.Value))
 	case Err[A]:
-		ans = Err[B]{Error: x.Error}
+		ans = FromErr[B](x.Error)
 	}
 	return ans
 }
