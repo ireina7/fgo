@@ -6,6 +6,7 @@ import (
 	"github.com/ireina7/fgo/structs/slice"
 )
 
+// * Enum for int
 type EnumInt struct{}
 
 func (enum *EnumInt) Succ(x int) int {
@@ -35,6 +36,7 @@ func NewEnumInt() *EnumInt {
 	return &EnumInt{}
 }
 
+// * Natural numbers
 type Nat uint
 
 type EnumNat struct{}
@@ -83,4 +85,17 @@ func (iter *IntIter) Next() maybe.Maybe[int] {
 	num := iter.curr
 	iter.curr += 1
 	return maybe.From(&num)
+}
+
+// * Non-zero Integers
+type NonZero uint
+
+// * Infinite precision Integers
+type Integer struct {
+	raw int64
+}
+
+// * Infinite precision floating numbers
+type Number struct {
+	raw float64
 }

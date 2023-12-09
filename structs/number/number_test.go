@@ -1,6 +1,7 @@
 package number_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/ireina7/fgo/interfaces"
@@ -13,4 +14,11 @@ func TestEnumInt(t *testing.T) {
 	collection.For[int](collection.FromIter(enum.Range(0, 10)), func(x int) {
 		t.Log("Got", x)
 	})
+}
+
+func TestIndex(t *testing.T) {
+	var i uint = 2
+	xs := [...]int{10: 3}
+	fmt.Println(xs[i])
+	fmt.Println(len(xs))
 }

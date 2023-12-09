@@ -4,7 +4,7 @@ import (
 	"github.com/ireina7/fgo/interfaces/collection"
 	"github.com/ireina7/fgo/structs/maybe"
 	"github.com/ireina7/fgo/types"
-	"github.com/ireina7/fgo/util"
+	"github.com/ireina7/fgo/utils"
 )
 
 type ListKind types.Type
@@ -42,11 +42,11 @@ func (list List[A]) Len() int {
 }
 
 func Clone[A any](xs List[A]) List[A] {
-	return util.TODO[List[A]]("List.Clone")
+	return utils.TODO[List[A]]("List.Clone")
 }
 
 func (list List[A]) Append(x A) List[A] {
-	return util.TODO[List[A]]("List.Append")
+	return utils.TODO[List[A]]("List.Append")
 }
 
 // func Map[A, B any](list List[A], f func(A) B) List[B] {

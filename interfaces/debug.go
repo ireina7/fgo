@@ -2,8 +2,12 @@ package interfaces
 
 import "fmt"
 
-type Debugging[A any] interface {
+type Debugger[A any] interface {
 	Debug(A) string
+}
+
+type Debugging interface {
+	Debug() string
 }
 
 type DefaultDebug[A any] struct{}

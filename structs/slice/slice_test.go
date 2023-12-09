@@ -11,14 +11,14 @@ import (
 	"github.com/ireina7/fgo/structs/slice"
 	"github.com/ireina7/fgo/structs/tuple"
 	"github.com/ireina7/fgo/types"
-	"github.com/ireina7/fgo/util"
+	"github.com/ireina7/fgo/utils"
 )
 
 func TestHKT(t *testing.T) {
 	var xs types.HKT[slice.SliceKind, int]
 	var ys slice.Slice[int]
 	xs = ys
-	util.Use(xs)
+	utils.Use(xs)
 }
 
 func TestSlice(t *testing.T) {
