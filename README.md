@@ -3,6 +3,8 @@ Functional GO!
 
 ![cover](./cover.jpeg)
 
+## Never user default struct constructor since golang has zero values for all types which may cause implicit invalid state!
+
 # Features
 - Algebraic Data Types
   + Option
