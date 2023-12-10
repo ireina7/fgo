@@ -7,6 +7,7 @@ import (
 	"github.com/ireina7/fgo/structs/number"
 	"github.com/ireina7/fgo/structs/number/checked"
 	"github.com/ireina7/fgo/structs/number/nonzero"
+	"github.com/ireina7/fgo/types"
 )
 
 // This will be a max-heap
@@ -14,13 +15,18 @@ type PriorityQueue[T cmp.Ordered] struct {
 	xs []T
 }
 
+type PriorityQueueKind types.Kind
+
+func (PriorityQueue[T]) KindType()  {}
+func (PriorityQueue[T]) ElemType(T) {}
+
 func Empty[T cmp.Ordered]() PriorityQueue[T] {
 	return PriorityQueue[T]{}
 }
 
 func Room[T cmp.Ordered](size uint) PriorityQueue[T] {
 	return PriorityQueue[T]{
-		xs: make([]T, size),
+		xs: make([]T, 0, size),
 	}
 }
 
