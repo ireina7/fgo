@@ -3,35 +3,28 @@ Functional GO!
 
 ![cover](./cover.jpeg)
 
-## Never user default struct constructor since golang has zero values for all types which may cause implicit invalid state!
+## Never use default struct constructor since golang has zero values for all types which may cause implicit invalid state!
 
 # Features
-- Algebraic Data Types
-  + Option
-  + Result
-  + Slice
-  + HashMap
-  + List
-  + SkipList
-  + Ref
-  + Ptr
-  + Lazy
-  + Tuple
-  + ...
-- Higher-Kinded Types
-- Typeclasses
-  + Monoid
-  + Functor
-  + Eq
-  + Ord
-  + Iterable
-  + Implement
-  + Monad
-  + Foldable
-  + Enum
-  + Apply
-  + ...
+## Algebraic Data Types
+```go
+type (
+    Maybe, Result, Slice[T], HashMap[K, V], 
+    List[T], SkipList[T], Ref[T](non-null reference), 
+    Ptr[T], Lazy[T], Tuple[A, B]...
+)
+```
+## Higher-Kinded Types
+`types.HKT[Kind, A]`
 
+## Typeclasses
+```go
+type (
+    Monoid, Functor, Eq, Ord, 
+    Iterable, Implement, Monad, 
+    Foldable, Enum, Apply...
+)
+```
 
 # Example
 ## Monoid

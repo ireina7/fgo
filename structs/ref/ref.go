@@ -33,3 +33,7 @@ func Map[A, B any](ref Ref[A], f func(A) B) Ref[B] {
 	b := f(ref.Deref())
 	return Refer(b)
 }
+
+func (ref Ref[A]) Modify(modify func(*A)) {
+	modify(ref.ptr.ptr)
+}

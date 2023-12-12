@@ -6,6 +6,34 @@ import (
 	"github.com/ireina7/fgo/structs/slice"
 )
 
+type Add[N any] interface {
+	Add(N, N) N
+}
+
+type Sub[N any] interface {
+	Sub(N, N) N
+}
+
+type Mul[N any] interface {
+	Mul(N, N) N
+}
+
+type Div[N any] interface {
+	Div(N, N) N
+}
+
+type Neg[N any] interface {
+	Neg(N) N
+}
+
+type Num[N any] interface {
+	Add[N]
+	Sub[N]
+	Mul[N]
+	Div[N]
+	Neg[N]
+}
+
 // * Enum for int
 type EnumInt struct{}
 
