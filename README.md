@@ -9,8 +9,9 @@ Functional GO!
 ## Algebraic Data Types
 ```go
 type (
-    Maybe, Result, Slice[T], HashMap[K, V], 
+    Maybe[T], Result[T], Slice[T], HashMap[K, V], 
     List[T], SkipList[T], Ref[T](non-null reference), 
+    Numbers, PriorityQueue[T](max heap), Set[T],
     Ptr[T], Lazy[T], Tuple[A, B]...
 )
 ```
@@ -20,9 +21,9 @@ type (
 ## Typeclasses
 ```go
 type (
-    Monoid, Functor, Eq, Ord, 
-    Iterable, Implement, Monad, 
-    Foldable, Enum, Apply...
+    Monoid, Functor, Eq, Ord, Hash
+    Iterable, Implement, Monad, Default,
+    Foldable, Enum, Logging, Apply, Async...
 )
 ```
 
@@ -49,8 +50,26 @@ func (example foldExample[A]) foldl(xs []A, acc func([]A, A) []A) []A {
 ```
 ## Functor
 ```go
-type Functor[F_, A, B any] interface {
+// functor.go
+type Functor[F_ Kind, A, B any] interface {
     Fmap(types.HKT[F_, A], func(A) B) types.HKT[F_, B]
 }
 
+// unsafe_functor.go
+package unsafe
+type Functor[F_ Kind] interface {
+    Fmap(types.HKT[F_, any], func(any) any) types.HKT[F_, any]
+}
+
+type FromUnsafe[F_ Kind, A, B any] struct {
+    hkt.Pipe[F_, A, B]
+    unsafe Functor[F_]
+}
+
+func (self FromUnsafe[F_, A, B]) Fmap(ma types.HKT[F_, A], f func(A) B) types.HKT[F_, B] {
+    mb := self.unsafe.Fmap(self.Boxed(ma), func(x any) any {
+        return f(x.(A))
+    })
+    return self.Unboxed(mb)
+}
 ```
