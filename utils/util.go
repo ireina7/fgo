@@ -7,3 +7,9 @@ func TODO[A any](msg string, args ...any) A {
 }
 
 func Use(...any) {}
+
+func Assert(cond bool) {
+	if !cond {
+		panic(fmt.Errorf("assertion failed"))
+	}
+}

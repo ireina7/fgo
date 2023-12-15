@@ -13,3 +13,7 @@ type Tuple7[A, B, C, D, E, F, G any] lo.Tuple7[A, B, C, D, E, F, G]
 func (t Tuple2[A, B]) Unpack() (A, B) {
 	return t.A, t.B
 }
+
+func Of2[A, B any](a A, b B) Tuple2[A, B] {
+	return Tuple2[A, B](lo.T2(a, b))
+}
